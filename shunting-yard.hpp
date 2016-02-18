@@ -2,5 +2,5 @@
 #define SHUNTING_YARD_HPP
 
 #include <string>
-int parse(std::string infix_op);
+long long parse(std::string infix_op);
 #endif

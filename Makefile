@@ -12,7 +12,7 @@ LIBS =
 # General compiler flags
 COMPILE_FLAGS = -std=c++14 -Wall -Wextra -g -Wall -Wextra
 # Additional release-specific flags
-RCOMPILE_FLAGS = -D NDEBUG
+RCOMPILE_FLAGS = 
 # Additional debug-specific flags
 DCOMPILE_FLAGS = -D DEBUG
 # Add additional include paths

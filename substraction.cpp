@@ -1,6 +1,6 @@
 #include "substraction.hpp"
 
-int Substraction::eval(int a, int b) {
+long long Substraction::eval(long long a, long long b) {
     return b - a;
 }
 

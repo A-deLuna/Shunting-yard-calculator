@@ -1,7 +1,11 @@
 #include "sum.hpp"
 
-int Sum::eval(int a, int b) {
-  return a + b;
+long long Sum::eval(long long a, long long b) {
+  long long ans = a + b;
+  if(ans > MAX_NUM) {
+    throw "Integer Overflow";
+  }
+  return ans;
 }
 
 int Sum::precedence() {

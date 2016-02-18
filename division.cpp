@@ -1,6 +1,6 @@
 #include "division.hpp"
 
-int Division::eval(int a, int b) {
+long long Division::eval(long long a, long long b) {
   return b / a;
 }
 

@@ -5,7 +5,7 @@
 
 class Substraction : public Operator {
 public:
-  int eval(int a, int b) override;
+  long long eval(long long a, long long b) override;
   int precedence() override;
   int associativity() override;
   ~Substraction() {}
