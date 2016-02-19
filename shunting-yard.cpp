@@ -7,6 +7,7 @@
 #include "sum.hpp"
 #include "substraction.hpp"
 #include "multiplication.hpp"
+#include "division.hpp"
 #include "memory"
 
 
@@ -33,6 +34,9 @@ Operator* get_operator(std::string s) {
   }
   else if(s == "*") {
     return new Multiplication();
+  }
+  else if(s == "/") {
+    return new Division();
   }
   else {
     return nullptr;
