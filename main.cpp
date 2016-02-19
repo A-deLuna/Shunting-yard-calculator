@@ -6,8 +6,9 @@
 void test_exception(const char* operation, const char* exception);
 void test_answer(const char* operation, long long exception);
 
-int main() {
-  test_answer("5 5 + 3", 8);
+
+void run() {
+  test_answer("5" , 5);
   test_answer("5 + 3" , 8);
   test_answer("5 + 3 + 6" , 14);
   test_answer("5 - 3", 2);
@@ -25,7 +26,17 @@ int main() {
   test_exception("1000000000000", "Integer Overflow");
   test_exception("999999999999 + 1", "Integer Overflow");
   test_exception("999999999999 * 2", "Integer Overflow");
+  test_exception("5 5 + 3", "Too many operands");
 }
+int main() {
+  try {
+    run();
+  }
+  catch(const char* msg) {
+    std::cout << msg << std::endl;
+  }
+}
+
 void test_answer(const char* operation, long long result) {
   assert(parse(operation) == result);
   std::cout<<"assertion passed '"<< operation <<"' = " << result<<std::endl;

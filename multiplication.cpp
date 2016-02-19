@@ -1,7 +1,11 @@
 #include "multiplication.hpp"
 
 long long Multiplication::eval(long long a, long long b) {
-  return a * b;
+  long long ans = a * b;
+  if(ans > MAX_NUM) {
+    throw "Integer Overflow";
+  }
+  return ans;
 }
 
 int Multiplication::precedence() {

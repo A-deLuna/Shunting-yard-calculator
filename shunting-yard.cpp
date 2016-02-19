@@ -18,23 +18,24 @@ std::stack<long long> output_stack;
 std::stack<Operator *> operator_stack;
 
 bool is_number(const std::string & exp) {
+  if(exp.empty()) return false;
   for (const char & c : exp) {
     if(!isdigit(c)) return false;
   }
   return true;
 }
 
-Operator* get_operator(std::string s) {
-  if(s == "+") {
+Operator* get_operator(std::string token) {
+  if(token == "+") {
     return new Sum();
   }
-  else if(s == "-") {
+  else if(token == "-") {
     return new Substraction();
   }
-  else if(s == "*") {
+  else if(token == "*") {
     return new Multiplication();
   }
-  else if(s == "/") {
+  else if(token == "/") {
     return new Division();
   }
   else {
@@ -75,19 +76,23 @@ long long parse(std::string infix_op) {
   // operator_stack.clear();
   prepare();
   std::stringstream stream(infix_op);
-  std::string s;
+  std::string token;
+  std::string previous_token;
   Operator * op;
 
-  while(stream >> s) {
-    if(is_number(s)) {
-      long long i = stoll(s);
+  while(stream >> token) {
+    if(is_number(token)) {
+      if(is_number(previous_token)) {
+        throw "Too many operands";
+      }
+      long long i = stoll(token);
       if(i > MAX_NUM) {
         throw "Integer Overflow";
       }
       output_stack.push(i);
       // std::cout<<"pushed "<<s<<"\n";
     }
-    if((op = get_operator(s)) != nullptr) {
+    else if((op = get_operator(token)) != nullptr) {
       // std::cout<<"found operator "<<s<<"\n";
       while(!operator_stack.empty() && 
               (
@@ -103,6 +108,11 @@ long long parse(std::string infix_op) {
       }
       operator_stack.push(op);
     }
+    // unknown token
+    else {
+      throw "Unexpected Token";
+    }
+    previous_token = token;
   }
 
   while(!operator_stack.empty()) {
