@@ -10,6 +10,8 @@ public:
   virtual long long eval(long long a, long long b) = 0;
   virtual int precedence() = 0;
   virtual int associativity() = 0;
+  virtual int arity() = 0;
+  virtual char sign() = 0;
   virtual ~Operator() {}
 };
 #endif

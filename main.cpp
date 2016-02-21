@@ -1,10 +1,10 @@
 #include "shunting-yard.hpp"
 #include <iostream>
 #include <cassert>
-#include <cstring>
+#include <string>
 
-void test_exception(const char* operation, const char* exception);
-void test_answer(const char* operation, long long exception);
+void test_exception(const std::string& operation, const std::string& exception);
+void test_answer(const std::string& operation, long long exception);
 
 
 void run() {
@@ -20,9 +20,16 @@ void run() {
   test_answer("4 / 2", 2);
   test_answer("3 / 2", 1);
   test_answer("4 + 4 / 2", 6);
+  test_answer("- 5", -5);
+  test_answer("5 - - 3", 8);
+  test_answer("5 + - 3", 2);
+  test_answer("5 * - 3", -15);
 
   test_exception("+", "Too few operands");
   test_exception("5 + + 3", "Too few operands");
+  test_exception("5 - + 3", "Too few operands");
+  test_exception("5 - - - 3", "Too few operands");
+  test_exception("5 / 0", "Division by zero");
   test_exception("1000000000000", "Integer Overflow");
   test_exception("999999999999 + 1", "Integer Overflow");
   test_exception("999999999999 * 2", "Integer Overflow");
@@ -32,25 +39,25 @@ int main() {
   try {
     run();
   }
-  catch(const char* msg) {
-    std::cout << msg << std::endl;
+  catch(const std::string & msg) {
+    std::cout <<"Test_answer raised exception "<< msg << std::endl;
   }
 }
 
-void test_answer(const char* operation, long long result) {
+void test_answer(const std::string & operation, long long result) {
   assert(parse(operation) == result);
   std::cout<<"assertion passed '"<< operation <<"' = " << result<<std::endl;
 }
 
-void test_exception (const char* operation, const char* exception) {
-  const char * test = "";
+void test_exception (const std::string & operation, const std::string & exception) {
+  std::string test = "";
   try {
     parse(operation);
   }
-  catch (const char* msg){
+  catch (std::string & msg){
     test = msg;
   }
-  assert(strcmp(test, exception) == 0);
+  assert(test == exception);
   std::cout<<"assertion passed '"<< operation <<"' = " << exception <<std::endl;
 
 }

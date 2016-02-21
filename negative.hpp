@@ -1,16 +1,16 @@
-#ifndef MULTIPLICATION_HPP
-#define MULTIPLICATION_HPP
+#ifndef NEGATIVE_HPP
+#define NEGATIVE_HPP
 
 #include "operator_interface.hpp"
 
-class Multiplication : public Operator {
+class Negative : public Operator {
 public:
   long long eval(long long a, long long b) override;
   int precedence() override;
   int associativity() override;
   int arity() override;
   char sign() override;
-  ~Multiplication() {}
+  ~Negative() {}
 };
 
 #endif

@@ -8,6 +8,8 @@ public:
   long long eval(long long a, long long b) override;
   int precedence() override;
   int associativity() override;
+  int arity() override;
+  char sign() override;
   ~Division() {}
 };
 

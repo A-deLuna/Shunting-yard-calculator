@@ -12,3 +12,9 @@ int Substraction::associativity() {
     return assoc::LEFT;
 }
 
+int Substraction::arity() {
+  return 2;
+}
+char Substraction::sign() {
+  return '-';
+}

@@ -8,14 +8,78 @@
 #include "substraction.hpp"
 #include "multiplication.hpp"
 #include "division.hpp"
-#include "memory"
+#include "negative.hpp"
 
 // TODO:(tony) roll my own number data type to accomodate
-// for project constrains 
-// comment to previos todo, maybe its not necessary... we could 
+// for project constrains
+// comment to previos todo, maybe its not necessary... we could
 // handle the logic in the eval methods, it's worth a thought later
+// Yet another entry... I've been thinking about using a fixed decimal data type
+// to hold the numbers
+
+
+// global state
 std::stack<long long> output_stack;
+// TODO refactor to use std::shared_ptr
 std::stack<Operator *> operator_stack;
+
+bool is_number(const std::string & exp);
+Operator* get_operator(const std::string & token, Operator * previous_op);
+void evaluate(Operator* op);
+void prepare();
+
+long long parse(const std::string & infix_op) {
+  prepare();
+  std::stringstream stream(infix_op);
+  std::string token;
+  std::string previous_token;
+  Operator * op;
+  // start previous_op with a dummy value
+  // when previous_op is null it means that the last token was not an operation
+  Operator * previous_op = new Sum();
+
+  while(stream >> token) {
+    if(is_number(token)) {
+      if(is_number(previous_token)) {
+        throw std::string("Too many operands");
+      }
+      long long i = stoll(token);
+      if(i > MAX_NUM) {
+        throw std::string("Integer Overflow");
+      }
+      output_stack.push(i);
+      previous_op = nullptr;
+    }
+    else if((op = get_operator(token, previous_op)) != nullptr) {
+      while(!operator_stack.empty() &&
+              (
+               (op->associativity() == assoc::LEFT && op->precedence() <= operator_stack.top()->precedence())
+              ||
+              (op->associativity() == assoc::RIGHT && op->precedence() < operator_stack.top()->precedence())
+              )
+            )
+      {
+        evaluate(operator_stack.top());
+        operator_stack.pop();
+      }
+      previous_op =  op;
+      operator_stack.push(op);
+    }
+    // unknown token
+    else {
+      throw std::string("Unexpected Token");
+    }
+    previous_token = token;
+  }
+
+  while(!operator_stack.empty()) {
+    op = operator_stack.top();
+    operator_stack.pop();
+    evaluate(op);
+  }
+
+  return output_stack.top();
+}
 
 bool is_number(const std::string & exp) {
   if(exp.empty()) return false;
@@ -24,12 +88,14 @@ bool is_number(const std::string & exp) {
   }
   return true;
 }
-
-Operator* get_operator(std::string token) {
+Operator* get_operator(const std::string & token, Operator * previous_op) {
   if(token == "+") {
     return new Sum();
   }
   else if(token == "-") {
+    if(previous_op && (previous_op->sign() != '_')) {
+      return new Negative();
+    }
     return new Substraction();
   }
   else if(token == "*") {
@@ -45,19 +111,24 @@ Operator* get_operator(std::string token) {
 
 void evaluate(Operator* op) {
   if(output_stack.empty()) {
-    throw "Too few operands";
+    throw std::string("Too few operands");
   }
   int a = output_stack.top();
   output_stack.pop();
 
-  if(output_stack.empty()) {
-    throw "Too few operands";
+  long long ans;
+  if(op->arity() == 1) {
+    ans = op->eval(a, 0);
   }
-  long long b = output_stack.top();
-  output_stack.pop();
-  // std::cout<<"evaluating with arguments "<<a << ", " << b<<"\n";
-  long long ans = op->eval(a, b);
-  // std::cout<<"eval ans = "<<ans<<std::endl;
+  else {
+    if(output_stack.empty()) {
+      throw std::string("Too few operands");
+    }
+    long long b = output_stack.top();
+    output_stack.pop();
+    ans = op->eval(a, b);
+  }
+
   output_stack.push(ans);
   delete op;
 }
@@ -70,60 +141,3 @@ void prepare() {
     operator_stack.pop();
   }
 }
-
-long long parse(std::string infix_op) {
-  // output_stack.clear();
-  // operator_stack.clear();
-  prepare();
-  std::stringstream stream(infix_op);
-  std::string token;
-  std::string previous_token;
-  Operator * op;
-
-  while(stream >> token) {
-    if(is_number(token)) {
-      if(is_number(previous_token)) {
-        throw "Too many operands";
-      }
-      long long i = stoll(token);
-      if(i > MAX_NUM) {
-        throw "Integer Overflow";
-      }
-      output_stack.push(i);
-      // std::cout<<"pushed "<<s<<"\n";
-    }
-    else if((op = get_operator(token)) != nullptr) {
-      // std::cout<<"found operator "<<s<<"\n";
-      while(!operator_stack.empty() && 
-              (
-               (op->associativity() == assoc::LEFT && op->precedence() <= operator_stack.top()->precedence())
-              || 
-              (op->associativity() == assoc::RIGHT && op->precedence() < operator_stack.top()->precedence())
-              )
-            )
-      {
-        // std::cout<<"condition met, evaluating "<<std::endl;
-        evaluate(operator_stack.top());
-        operator_stack.pop();
-      }
-      operator_stack.push(op);
-    }
-    // unknown token
-    else {
-      throw "Unexpected Token";
-    }
-    previous_token = token;
-  }
-
-  while(!operator_stack.empty()) {
-    op = operator_stack.top();
-    operator_stack.pop();
-    evaluate(op);
-  }
-  
-  // std::cout<<"answer "<< output_stack.top() <<"\n";
-  return output_stack.top();
-}
-
-
-
