@@ -8,32 +8,33 @@ void test_answer(const std::string& operation, long long exception);
 
 
 void run() {
-  test_answer("5" , 5);
-  test_answer("5 + 3" , 8);
-  test_answer("5 + 3 + 6" , 14);
-  test_answer("5 - 3", 2);
-  test_answer("5 - 3 - 1", 1);
-  test_answer("5 + 3 - 1", 7);
-  test_answer("5 * 3", 15);
-  test_answer("5 * 3 * 2", 30);
-  test_answer("5 - 3 * 2", -1);
-  test_answer("4 / 2", 2);
-  test_answer("3 / 2", 1);
-  test_answer("4 + 4 / 2", 6);
-  test_answer("- 5", -5);
-  test_answer("5 - - 3", 8);
-  test_answer("5 + - 3", 2);
-  test_answer("5 * - 3", -15);
+  test_answer("5 =" , 5);
+  test_answer("5 + 3 =" , 8);
+  test_answer("5 + 3 + 6 =" , 14);
+  test_answer("5 - 3 =", 2);
+  test_answer("5 - 3 - 1 =", 1);
+  test_answer("5 + 3 - 1 =", 7);
+  test_answer("5 * 3 =", 15);
+  test_answer("5 * 3 * 2 =", 30);
+  test_answer("5 - 3 * 2 =", -1);
+  test_answer("4 / 2 =", 2);
+  test_answer("3 / 2 =", 1);
+  test_answer("4 + 4 / 2 =", 6);
+  test_answer("- 5 =", -5);
+  test_answer("5 - - 3 =", 8);
+  test_answer("5 + - 3 =", 2);
+  test_answer("5 * - 3 =", -15);
 
-  test_exception("+", "Too few operands");
-  test_exception("5 + + 3", "Too few operands");
-  test_exception("5 - + 3", "Too few operands");
-  test_exception("5 - - - 3", "Too few operands");
-  test_exception("5 / 0", "Division by zero");
-  test_exception("1000000000000", "Integer Overflow");
-  test_exception("999999999999 + 1", "Integer Overflow");
-  test_exception("999999999999 * 2", "Integer Overflow");
-  test_exception("5 5 + 3", "Too many operands");
+  test_exception("+ =", "Too few operands");
+  test_exception("5 + + 3 =", "Too few operands");
+  test_exception("5 - + 3 =", "Too few operands");
+  test_exception("5 - - - 3 =", "Too few operands");
+  test_exception("5 / 0 =", "Division by zero");
+  test_exception("1000000000000 =", "Integer Overflow");
+  test_exception("999999999999 + 1 =", "Integer Overflow");
+  test_exception("999999999999 * 2 =", "Integer Overflow");
+  test_exception("5 5 + 3 =", "Too many operands");
+  test_exception("5 + 3", "Missing =");
 }
 int main() {
   try {

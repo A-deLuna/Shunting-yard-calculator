@@ -65,6 +65,9 @@ long long parse(const std::string & infix_op) {
       previous_op =  op;
       operator_stack.push(op);
     }
+    else if(token == "=") {
+      break;
+    }
     // unknown token
     else {
       throw std::string("Unexpected Token");
@@ -78,6 +81,9 @@ long long parse(const std::string & infix_op) {
     evaluate(op);
   }
 
+  if(token != "=") {
+    throw std::string("Missing =");
+  }
   return output_stack.top();
 }
 
