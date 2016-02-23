@@ -37,8 +37,9 @@ long long parse(const std::string & infix_op) {
   // start previous_op with a dummy value
   // when previous_op is null it means that the last token was not an operation
   Operator * previous_op = new Sum();
-
-  while(stream >> token) {
+  std::vector<std::string> tokens = regex(infix_op);
+  for(auto s = tokens.begin(); s != tokens.end(); ++s) {
+    token = *s;
     if(is_number(token)) {
       if(is_number(previous_token)) {
         throw std::string("Too many operands");

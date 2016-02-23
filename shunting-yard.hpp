@@ -2,5 +2,8 @@
 #define SHUNTING_YARD_HPP
 
 #include <string>
+#include <vector>
+
 long long parse(const std::string & infix_op);
+std::vector<std::string> regex(const std::string & infix_op);
 #endif
