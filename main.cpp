@@ -48,8 +48,12 @@ int main(int argc, char **argv) {
     }
   }
   else if(argc == 2) {
+    std::vector<std::string> v;
     try {
-      std::cout<<argv[1] << " "<< parse(argv[1])<<std::endl;
+      std::cout<<argv[1] << " "<< parse(argv[1], v)<<std::endl;
+      for(auto s : v) {
+        std::cout<< s <<"\n";
+      }
     }
     catch(const std::string & msg) {
       std::cout<< "Raised exception "<< msg << std::endl;
@@ -58,14 +62,16 @@ int main(int argc, char **argv) {
 }
 
 void test_answer(const std::string & operation, long long result) {
-  assert(parse(operation) == result);
+  std::vector<std::string> v;
+  assert(parse(operation, v) == result);
   std::cout<<"assertion passed '"<< operation <<"' = " << result<<std::endl;
 }
 
 void test_exception (const std::string & operation, const std::string & exception) {
   std::string test = "";
+  std::vector<std::string> v;
   try {
-    parse(operation);
+    parse(operation, v);
   }
   catch (std::string & msg){
     test = msg;

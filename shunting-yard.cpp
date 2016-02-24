@@ -25,10 +25,10 @@ std::stack<Operator *> operator_stack;
 
 bool is_number(const std::string & exp);
 Operator* get_operator(const std::string & token, Operator * previous_op);
-void evaluate(Operator* op);
+void evaluate(Operator* op, std::vector<std::string> & out_ops);
 void prepare();
 
-long long parse(const std::string & infix_op) {
+long long parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   prepare();
   std::stringstream stream(infix_op);
   std::string token;
@@ -60,7 +60,7 @@ long long parse(const std::string & infix_op) {
               )
             )
       {
-        evaluate(operator_stack.top());
+        evaluate(operator_stack.top(), out_ops);
         operator_stack.pop();
       }
       previous_op =  op;
@@ -79,7 +79,7 @@ long long parse(const std::string & infix_op) {
   while(!operator_stack.empty()) {
     op = operator_stack.top();
     operator_stack.pop();
-    evaluate(op);
+    evaluate(op, out_ops);
   }
 
   if(token != "=") {
@@ -116,7 +116,7 @@ Operator* get_operator(const std::string & token, Operator * previous_op) {
   }
 }
 
-void evaluate(Operator* op) {
+void evaluate(Operator* op, std::vector<std::string> & out_ops) {
   if(output_stack.empty()) {
     throw std::string("Too few operands");
   }
@@ -126,6 +126,7 @@ void evaluate(Operator* op) {
   long long ans;
   if(op->arity() == 1) {
     ans = op->eval(a, 0);
+    out_ops.push_back( "-" + std::to_string(a) + " = " + std::to_string(ans));
   }
   else {
     if(output_stack.empty()) {
@@ -134,6 +135,7 @@ void evaluate(Operator* op) {
     long long b = output_stack.top();
     output_stack.pop();
     ans = op->eval(a, b);
+    out_ops.push_back(std::to_string(b) + " " + op->sign() + " " +  std::to_string(a) + " = " + std::to_string(ans) );
   }
 
   output_stack.push(ans);
