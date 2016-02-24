@@ -71,7 +71,7 @@ long long parse(const std::string & infix_op) {
     }
     // unknown token
     else {
-      throw std::string("Unexpected Token");
+      throw std::string("Unexpected Token '" + token + "'");
     }
     previous_token = token;
   }

@@ -4,7 +4,7 @@
 #include <iostream>
 
 std::vector<std::string> regex(const std::string & infix_op) {
-  std::regex tokenize("\\d+\\.?\\d*|\\+|-|\\*|/|\\(|\\)|=");
+  std::regex tokenize("\\d+\\.?[\\dA-Za-z]*|\\+|-|\\*|/|\\(|\\)|=|[A-Za-z_\\$][A-Za-z\\d_\\$]*");
 
   auto words_begin = std::sregex_iterator(infix_op.begin(), infix_op.end(), tokenize);
   auto words_end = std::sregex_iterator();

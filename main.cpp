@@ -34,6 +34,9 @@ void run() {
   test_exception("999999999999 * 2 =", "Integer Overflow");
   test_exception("5 5+ 3 =", "Too many operands");
   test_exception("5 + 3", "Missing =");
+  test_exception("a=", "Unexpected Token 'a'");
+  test_exception("5a=", "Unexpected Token '5a'");
+  test_exception("5/(a)=", "Unexpected Token '('");
 }
 int main(int argc, char **argv) {
   if(argc == 1) {
