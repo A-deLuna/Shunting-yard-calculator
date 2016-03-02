@@ -85,7 +85,7 @@ long long parse(const std::string & infix_op, std::vector<std::string> & out_ops
   if(token != "=") {
     throw std::string("Missing =");
   }
-  return output_stack.top();
+  return output_stack.empty() ? 0 : output_stack.top();
 }
 
 bool is_number(const std::string & exp) {
@@ -120,7 +120,8 @@ void evaluate(Operator* op, std::vector<std::string> & out_ops) {
   if(output_stack.empty()) {
     throw std::string("Too few operands");
   }
-  int a = output_stack.top();
+  long long a = output_stack.top();
+
   output_stack.pop();
 
   long long ans;

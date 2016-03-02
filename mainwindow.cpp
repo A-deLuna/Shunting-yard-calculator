@@ -1,3 +1,4 @@
+#ifndef TEST
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
@@ -46,3 +47,4 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+#endif

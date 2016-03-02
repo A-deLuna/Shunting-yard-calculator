@@ -2,6 +2,7 @@
 #define OPERATOR_INTERFACE_HPP
 
 #define MAX_NUM 999999999999LL
+#define MIN_NUM -999999999999LL
 
 enum assoc { LEFT, RIGHT };
 

@@ -14,7 +14,7 @@ COMPILE_FLAGS = -std=c++14 -Wall -Wextra -g -Wall -Wextra
 # Additional release-specific flags
 RCOMPILE_FLAGS = 
 # Additional debug-specific flags
-DCOMPILE_FLAGS = -D DEBUG
+DCOMPILE_FLAGS = -D TEST
 # Add additional include paths
 INCLUDES = -I $(SRC_PATH)/
 # General linker settings
