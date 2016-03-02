@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Tonyculator
+Comment=A calculator for tony
+Exec=/home/tony/qtbuilds/build-calculatorUi-Desktop-Debug/calculatorUi
+Icon=accessories-calculator
+Terminal=false
