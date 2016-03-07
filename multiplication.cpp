@@ -5,6 +5,9 @@ long long Multiplication::eval(long long a, long long b) {
   if(ans > MAX_NUM) {
     throw std::string("Integer Overflow");
   }
+  if(ans < MIN_NUM) {
+    throw std::string("Integer Underflow");
+  }
   return ans;
 }
 
