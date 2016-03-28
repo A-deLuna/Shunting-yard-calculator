@@ -4,7 +4,7 @@
 #include <cassert>
 
 void test_exception(const std::string& operation, const std::string& exception);
-void test_answer(const std::string& operation, long long exception);
+void test_answer(const std::string& operation, int exception);
 
 
 void run() {
@@ -70,9 +70,10 @@ int main(int argc, char **argv) {
   }
 }
 
-void test_answer(const std::string & operation, long long result) {
+void test_answer(const std::string & operation, int result) {
   std::vector<std::string> v;
-  assert(parse(operation, v) == result);
+  Number n (result, 1);
+  assert(parse(operation, v) == n);
   std::cout<<"assertion passed '"<< operation <<"' = " << result<<std::endl;
 }
 

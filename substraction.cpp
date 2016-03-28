@@ -1,14 +1,14 @@
 #include "substraction.hpp"
 #include <string>
-long long Substraction::eval(long long a, long long b) {
+Number Substraction::eval(Number a, Number b) {
 
-    long long ans = b - a;
-    if(ans > MAX_NUM) {
-      throw std::string("Integer Overflow");
-    }
-    if(ans < MIN_NUM) {
-      throw std::string("Integer Underflow");
-    }
+    Number ans = b - a;
+//    if(ans > MAX_NUM) {
+//      throw std::string("Integer Overflow");
+//    }
+//    if(ans < MIN_NUM) {
+//      throw std::string("Integer Underflow");
+//    }
     return ans;
 }
 

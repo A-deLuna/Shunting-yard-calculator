@@ -21,7 +21,7 @@
 
 
 // global state
-std::stack<long long> output_stack;
+std::stack<Number> output_stack;
 // TODO refactor to use std::shared_ptr
 std::stack<Operator *> operator_stack;
 
@@ -29,8 +29,9 @@ bool is_number(const std::string & exp);
 Operator* get_operator(const std::string & token, Operator * previous_op);
 void evaluate(Operator* op, std::vector<std::string> & out_ops);
 void prepare();
+Number parse_number(std::string & tok);
 
-long long parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
+Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   prepare();
   std::stringstream stream(infix_op);
   std::string token;
@@ -46,10 +47,8 @@ long long parse(const std::string & infix_op, std::vector<std::string> & out_ops
       if(is_number(previous_token)) {
         throw std::string("Too many operands");
       }
-      long long i = stoll(token);
-      if(i > MAX_NUM) {
-        throw std::string("Integer Overflow");
-      }
+      Number i = parse_number(token);
+
       output_stack.push(i);
       previous_op = nullptr;
     }
@@ -106,13 +105,33 @@ long long parse(const std::string & infix_op, std::vector<std::string> & out_ops
   if(token != "=") {
     throw std::string("Missing =");
   }
-  return output_stack.empty() ? 0 : output_stack.top();
+  return output_stack.empty() ? Number("0", "1") : output_stack.top();
+}
+
+Number parse_number(std::string & tok) {
+  bool found_period = false;
+  bool found_E = false;
+
+  int e_pos = tok.find("E");
+
+  std::string mantissa;
+  std::string e;
+  if(e_pos == std::string::npos) {
+    mantissa = tok;
+    e = "1";
+  } else {
+    mantissa = tok.substr(0, e_pos);
+    e = tok.substr(e_pos+1);
+  }
+  Number n (mantissa, e);
+  return n;
+
 }
 
 bool is_number(const std::string & exp) {
   if(exp.empty()) return false;
   for (const char & c : exp) {
-    if(!isdigit(c)) return false;
+    if(!(isdigit(c) || c == '.' || c == 'E'  )) return false;
   }
   return true;
 }
@@ -147,23 +166,24 @@ void evaluate(Operator* op, std::vector<std::string> & out_ops) {
   if(output_stack.empty()) {
     throw std::string("Too few operands");
   }
-  long long a = output_stack.top();
+  Number a = output_stack.top();
 
   output_stack.pop();
 
-  long long ans;
+  Number ans;
   if(op->arity() == 1) {
-    ans = op->eval(a, 0);
-    out_ops.push_back( "-" + std::to_string(a) + " = " + std::to_string(ans));
+    Number n ("0", "1");
+    ans = op->eval(a, n);
+    //out_ops.push_back( "-" + std::to_string(a) + " = " + std::to_string(ans));
   }
   else {
     if(output_stack.empty()) {
       throw std::string("Too few operands");
     }
-    long long b = output_stack.top();
+    Number b = output_stack.top();
     output_stack.pop();
     ans = op->eval(a, b);
-    out_ops.push_back(std::to_string(b) + " " + op->sign() + " " +  std::to_string(a) + " = " + std::to_string(ans) );
+    //out_ops.push_back(std::to_string(b) + " " + op->sign() + " " +  std::to_string(a) + " = " + std::to_string(ans) );
   }
 
   output_stack.push(ans);

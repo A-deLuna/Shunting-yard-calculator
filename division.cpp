@@ -1,10 +1,10 @@
 #include "division.hpp"
 #include <string>
 
-long long Division::eval(long long a, long long b) {
-  if(a == 0) {
-    throw std::string("Division by zero");
-  }
+Number Division::eval(Number a, Number b) {
+//  if(a == 0) {
+//    throw std::string("Division by zero");
+// }
   return b / a;
 }
 

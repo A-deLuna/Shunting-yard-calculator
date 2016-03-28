@@ -3,8 +3,9 @@
 
 #include <string>
 #include <vector>
+#include "number.hpp"
 
-long long parse(const std::string & infix_op, std::vector<std::string> & out_ops);
+Number parse(const std::string & infix_op, std::vector<std::string> & out_ops);
 std::vector<std::string> regex(const std::string & infix_op);
 std::string toBase(long long n, int base);
 #endif

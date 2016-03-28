@@ -5,7 +5,7 @@
 
 class Negative : public Operator {
 public:
-  long long eval(long long a, long long b) override;
+  Number eval(Number a, Number b) override;
   int precedence() override;
   int associativity() override;
   int arity() override;
