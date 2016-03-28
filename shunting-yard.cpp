@@ -9,6 +9,8 @@
 #include "multiplication.hpp"
 #include "division.hpp"
 #include "negative.hpp"
+#include "left-paren.hpp"
+#include "right-paren.hpp"
 
 // TODO:(tony) roll my own number data type to accomodate
 // for project constrains
@@ -52,20 +54,36 @@ long long parse(const std::string & infix_op, std::vector<std::string> & out_ops
       previous_op = nullptr;
     }
     else if((op = get_operator(token, previous_op)) != nullptr) {
-      while(!operator_stack.empty() &&
-              (
-               (op->associativity() == assoc::LEFT && op->precedence() <= operator_stack.top()->precedence())
-              ||
-              (op->associativity() == assoc::RIGHT && op->precedence() < operator_stack.top()->precedence())
-              )
-            )
-      {
-        evaluate(operator_stack.top(), out_ops);
+      if(op->sign() == '(') {
+        operator_stack.push(op);
+      } else if(op->sign() == ')') {
+        while(!operator_stack.empty() && operator_stack.top()->sign() != '(') {
+          evaluate(operator_stack.top(), out_ops);
+          operator_stack.pop();
+        }
+        // error
+        if(operator_stack.empty()) {
+          throw std::string("mismatched parens");
+        }
         operator_stack.pop();
       }
-      previous_op =  op;
-      operator_stack.push(op);
+      else {
+        while(!operator_stack.empty() &&
+                (
+                 (op->associativity() == assoc::LEFT && op->precedence() <= operator_stack.top()->precedence())
+                ||
+                (op->associativity() == assoc::RIGHT && op->precedence() < operator_stack.top()->precedence())
+                )
+              )
+        {
+          evaluate(operator_stack.top(), out_ops);
+          operator_stack.pop();
+        }
+        operator_stack.push(op);
+      }
+      previous_op = op;
     }
+    
     else if(token == "=") {
       break;
     }
@@ -78,6 +96,9 @@ long long parse(const std::string & infix_op, std::vector<std::string> & out_ops
 
   while(!operator_stack.empty()) {
     op = operator_stack.top();
+    if(op->sign() == '(') {
+      throw std::string("mismatched parens");
+    }
     operator_stack.pop();
     evaluate(op, out_ops);
   }
@@ -110,6 +131,12 @@ Operator* get_operator(const std::string & token, Operator * previous_op) {
   }
   else if(token == "/") {
     return new Division();
+  }
+  else if(token == "(") {
+    return new LeftParen();
+  }
+  else if(token == ")") {
+    return new RightParen();
   }
   else {
     return nullptr;

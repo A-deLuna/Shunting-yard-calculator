@@ -24,6 +24,10 @@ void run() {
   test_answer("5 - -3=", 8);
   test_answer("5 + - 3 =", 2);
   test_answer("5 * -3=", -15);
+  test_answer("(5)=", 5);
+  test_answer("(5 + 3)=", 8);
+  test_answer("(5 + 3) / 2=", 4);
+  test_answer("(6 + (11-2) * 2) / 2=", 12);
 
   test_exception("+=", "Too few operands");
   test_exception("5++ 3 =", "Too few operands");
@@ -37,8 +41,10 @@ void run() {
   test_exception("5 + 3", "Missing =");
   test_exception("a=", "Unexpected Token 'a'");
   test_exception("5a=", "Unexpected Token '5a'");
-  test_exception("5/(a)=", "Unexpected Token '('");
-  test_exception("999999999999 * 999999999999=", "Integer Underflow");
+  // test_exception("5/(a)=", "Unexpected Token '('");
+  test_exception("999999999999 * 999999999999=", "Integer Overflow");
+  test_exception("(55=", "mismatched parens");
+  test_exception("55)=", "mismatched parens");
 }
 
 int main(int argc, char **argv) {

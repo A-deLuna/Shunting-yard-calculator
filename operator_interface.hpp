@@ -4,15 +4,15 @@
 #define MAX_NUM 999999999999LL
 #define MIN_NUM -999999999999LL
 
-enum assoc { LEFT, RIGHT };
+enum assoc {NONE, LEFT, RIGHT };
 
 class Operator {
 public:
-  virtual long long eval(long long a, long long b) = 0;
-  virtual int precedence() = 0;
-  virtual int associativity() = 0;
-  virtual int arity() = 0;
-  virtual char sign() = 0;
+  virtual long long eval(long long a, long long b) {}
+  virtual int precedence() {}
+  virtual int associativity() {}
+  virtual int arity() {}
+  virtual char sign() {}
   virtual ~Operator() {}
 };
 #endif
