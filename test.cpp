@@ -4,30 +4,32 @@
 #include <cassert>
 
 void test_exception(const std::string& operation, const std::string& exception);
-void test_answer(const std::string& operation, int exception);
+void test_answer(const std::string& operation, const std::string& ans);
 
 
 void run() {
-  test_answer("5=" , 5);
-  test_answer("5+3=" , 8);
-  test_answer("5+3+6 =" , 14);
-  test_answer("5-3 =", 2);
-  test_answer("5-3 -    1 =", 1);
-  test_answer("5+3 - 1 =", 7);
-  test_answer("5*3=", 15);
-  test_answer("5 * 3 * 2=", 30);
-  test_answer("5 - 3 *2=", -1);
-  test_answer("4 / 2 =", 2);
-  test_answer("3 /2=", 1);
-  test_answer("4 + 4 / 2 =", 6);
-  test_answer("-5=", -5);
-  test_answer("5 - -3=", 8);
-  test_answer("5 + - 3 =", 2);
-  test_answer("5 * -3=", -15);
-  test_answer("(5)=", 5);
-  test_answer("(5 + 3)=", 8);
-  test_answer("(5 + 3) / 2=", 4);
-  test_answer("(6 + (11-2) * 2) / 2=", 12);
+  std::cout<<"before forst" <<std::endl;
+  test_answer("5=" ,"5");
+  std::cout<<"after forst" <<std::endl;
+  test_answer("5+3=" , "8");
+  test_answer("5+3+6 =" , "14");
+  test_answer("5-3 =", "2");
+  test_answer("5-3 -    1 =", "1");
+  test_answer("5+3 - 1 =", "7");
+  test_answer("5*3=", "15");
+  test_answer("5 * 3 * 2=", "30");
+  test_answer("5 - 3 *2=", " -1");
+  test_answer("4 / 2 =", "2");
+  test_answer("3 /2=", "1.5");
+  test_answer("4 + 4 / 2 =", "6");
+  test_answer("-5=", "-5");
+  test_answer("5 - -3=", "8");
+  test_answer("5 + - 3 =", "2");
+  test_answer("5 * -3=", "-15");
+  test_answer("(5)=", "5");
+  test_answer("(5 + 3)=", "8");
+  test_answer("(5 + 3) / 2=", "4");
+  test_answer("(5 + (11-2) * 2) / 2=", "11.5");
 
   test_exception("+=", "Too few operands");
   test_exception("5++ 3 =", "Too few operands");
@@ -70,14 +72,15 @@ int main(int argc, char **argv) {
   }
 }
 
-void test_answer(const std::string & operation, int result) {
+void test_answer(const std::string& operation, const std::string& result) {
   std::vector<std::string> v;
-  Number n (result, 1);
-  assert(parse(operation, v) == n);
-  std::cout<<"assertion passed '"<< operation <<"' = " << result<<std::endl;
+  Number n (result, "0");
+  Number t = parse(operation, v); 
+  assert(t == n);
+  std::cout<<"assertion passed '"<< operation <<"' = " << t <<std::endl;
 }
 
-void test_exception (const std::string & operation, const std::string & exception) {
+void test_exception(const std::string & operation, const std::string& exception) {
   std::string test = "";
   std::vector<std::string> v;
   try {

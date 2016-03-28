@@ -1,4 +1,5 @@
 #include "number.hpp"
+#include "iostream"
 
 Number::Number(dec::decimal<8> mantissa, dec::decimal<8> exponent) 
   : mantissa(mantissa), exponent(exponent) {
@@ -27,7 +28,7 @@ void Number::normalize() {
   }
 }
 
-Number Number::operator+(const Number &b) {
+Number Number::operator+(const Number &b) const {
   Number smlr = std::min(*this, b);
   Number gtr = std::max(*this, b);
 
@@ -40,25 +41,31 @@ Number Number::operator+(const Number &b) {
 }
 
 Number Number::operator-(const Number &b) {
-  Number smlr = std::min(*this, b);
-  Number gtr = std::max(*this, b);
+  Number b_cpy(b);
+  Number * smlr =  (*this < b_cpy) ? this : &b_cpy;
+  Number gtr = std::max(*this, b_cpy);
 
-  while(smlr.exponent < gtr.exponent) {
-    smlr.shr();
+  while(smlr->exponent < gtr.exponent) {
+    smlr->shr();
   }
 
-  Number ans(this->mantissa - b.mantissa, gtr.exponent);
+  Number ans(this->mantissa - b_cpy.mantissa, gtr.exponent);
   return ans;
 }
 
-Number Number::operator*(const Number &b) {
+Number Number::operator*(const Number &b) const {
   Number ans (this->mantissa * b.mantissa , this->exponent + b.exponent);
   return ans;
 }
 
-Number Number::operator/(const Number &b) {
+Number Number::operator/(const Number &b) const {
   Number ans (this->mantissa / b.mantissa , this->exponent - b.exponent);
   return ans;
+}
+
+Number Number::operator-() const {
+  Number n ("-1", "0");
+  return *this * n;
 }
 
 void Number::shl() {

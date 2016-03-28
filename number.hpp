@@ -8,10 +8,11 @@ public:
   Number(int mantissa, int exponent);
   Number();
 
-  Number operator+(const Number &b);
+  Number operator-() const;
+  Number operator+(const Number &b) const;
   Number operator-(const Number &b);
-  Number operator*(const Number &b);
-  Number operator/(const Number &b);
+  Number operator*(const Number &b) const;
+  Number operator/(const Number &b) const;
   void shl();
   void shr();
   dec::decimal<8> mantissa;

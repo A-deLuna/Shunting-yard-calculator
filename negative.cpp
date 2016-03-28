@@ -1,7 +1,7 @@
 #include "negative.hpp"
 
 Number Negative::eval(Number a, Number b) {
-  return a-a;
+  return -a;
 }
 
 int Negative::precedence() {

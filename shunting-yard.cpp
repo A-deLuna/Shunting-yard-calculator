@@ -105,7 +105,7 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   if(token != "=") {
     throw std::string("Missing =");
   }
-  return output_stack.empty() ? Number("0", "1") : output_stack.top();
+  return output_stack.empty() ? Number("0", "0") : output_stack.top();
 }
 
 Number parse_number(std::string & tok) {
@@ -118,7 +118,7 @@ Number parse_number(std::string & tok) {
   std::string e;
   if(e_pos == std::string::npos) {
     mantissa = tok;
-    e = "1";
+    e = "0";
   } else {
     mantissa = tok.substr(0, e_pos);
     e = tok.substr(e_pos+1);
@@ -169,12 +169,14 @@ void evaluate(Operator* op, std::vector<std::string> & out_ops) {
   Number a = output_stack.top();
 
   output_stack.pop();
+  std::stringstream s;
 
   Number ans;
   if(op->arity() == 1) {
-    Number n ("0", "1");
+    Number n ("0", "0");
     ans = op->eval(a, n);
-    //out_ops.push_back( "-" + std::to_string(a) + " = " + std::to_string(ans));
+    s <<  "-" <<  a << " = " << ans;
+    out_ops.push_back(s.str());
   }
   else {
     if(output_stack.empty()) {
@@ -183,7 +185,8 @@ void evaluate(Operator* op, std::vector<std::string> & out_ops) {
     Number b = output_stack.top();
     output_stack.pop();
     ans = op->eval(a, b);
-    //out_ops.push_back(std::to_string(b) + " " + op->sign() + " " +  std::to_string(a) + " = " + std::to_string(ans) );
+    s << b << " " << op->sign() << " " <<  a << " = " << ans;
+    out_ops.push_back(s.str());
   }
 
   output_stack.push(ans);
