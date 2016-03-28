@@ -5,3 +5,5 @@ calculator
 *.gch
 qtbuilds
 calculatorUi.pro.user
+.release_time
+.ycm_extra_conf.pyc
