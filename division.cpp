@@ -2,9 +2,9 @@
 #include <string>
 
 Number Division::eval(Number a, Number b) {
-//  if(a == 0) {
-//    throw std::string("Division by zero");
-// }
+  if(a == Number(0,0)) {
+    throw std::string("Division by zero");
+ }
   return b / a;
 }
 
