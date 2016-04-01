@@ -1,7 +1,7 @@
 #include "number.hpp"
 #include "iostream"
 
-Number::Number(dec::decimal<8> mantissa, dec::decimal<8> exponent) 
+Number::Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent) 
   : mantissa(mantissa), exponent(exponent) {
   normalize();
 }
@@ -20,10 +20,10 @@ Number::Number()
 }
 
 void Number::normalize() {
-  while(mantissa > dec::decimal_cast<8>(0) && mantissa < dec::decimal_cast<8>(1)) {
+  while(mantissa > dec::decimal_cast<PREC>(0) && mantissa < dec::decimal_cast<PREC>(1)) {
     shl();
   }
-  while(mantissa >= dec::decimal_cast<8>(10)) {
+  while(mantissa >= dec::decimal_cast<PREC>(10)) {
     shr();
   }
 }
@@ -69,10 +69,10 @@ Number Number::operator-() const {
 }
 
 void Number::shl() {
-  mantissa *= dec::decimal_cast<8>(10);
-  exponent -= dec::decimal_cast<8>(1);
+  mantissa *= dec::decimal_cast<PREC>(10);
+  exponent -= dec::decimal_cast<PREC>(1);
 }
 void Number::shr() {
-  mantissa /= dec::decimal_cast<8>(10);
-  exponent += dec::decimal_cast<8>(1);
+  mantissa /= dec::decimal_cast<PREC>(10);
+  exponent += dec::decimal_cast<PREC>(1);
 }

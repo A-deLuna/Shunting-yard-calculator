@@ -8,9 +8,7 @@ void test_answer(const std::string& operation, const std::string& ans);
 
 
 void run() {
-  std::cout<<"before forst" <<std::endl;
   test_answer("5=" ,"5");
-  std::cout<<"after forst" <<std::endl;
   test_answer("5+3=" , "8");
   test_answer("5+3+6 =" , "14");
   test_answer("5-3 =", "2");
@@ -30,7 +28,30 @@ void run() {
   test_answer("(5 + 3)=", "8");
   test_answer("(5 + 3) / 2=", "4");
   test_answer("(5 + (11-2) * 2) / 2=", "11.5");
-
+  test_answer("5.3 + 8.2 * 2.1 =", "22.52");
+  //TODO: fix this case
+  //test_answer("4.75--8.43*--1.01=", "13.2643");
+  test_answer("(3.2-((4.2+8.1)*2)-1)=", "-22.4");
+  test_answer("1E1 - 2E-2=", "9.98");
+  test_answer("5--2E-2", "5.02");
+  //test_answer("4 + 3E", "");
+  //test_answer("A * 2", "");
+  //test_answer("6.5 - 2.5/2 = A", "");
+  //test_answer(*2.5 = "B", "");
+  //test_answer("A + B = C", "");
+  //test_answer("C =", "");
+  test_answer("12345678 * 100=", "1234567800");
+  test_answer("999999999+3=", "1000000002");
+  test_answer("99999*99999*2000=", "1.99996E13");
+  test_answer("0.33333333- 1/3=", "-0.00000000333");
+  test_answer("3/5 – 0.59999999", "0.00000001");
+  test_answer("1/2*2.0000001=", "1.00000005");
+//  test_answer("1-(-4)^(1/2)=", "");
+//  test_answer("(1-1)/2=", "");
+//  test_answer("2/(1-1)=", "");
+//  test_answer("4^-5=", "");
+//  test_answer("1 + 1* 1/1=", "");
+  
   test_exception("+=", "Too few operands");
   test_exception("5++ 3 =", "Too few operands");
   test_exception("5 -+3 =", "Too few operands");
@@ -47,6 +68,7 @@ void run() {
   // test_exception("999999999999 * 999999999999=", "Integer Overflow");
   test_exception("(55=", "mismatched parens");
   test_exception("55)=", "mismatched parens");
+   test_exception(" //(3-(2+((4*2.1)-1)=", "mismatched parens");
 }
 
 int main(int argc, char **argv) {
@@ -76,8 +98,9 @@ void test_answer(const std::string& operation, const std::string& result) {
   std::vector<std::string> v;
   Number n (result, "0");
   Number t = parse(operation, v); 
+  std::cout << "operation '" << operation << "',  " << t << " == " << result;
   assert(t == n);
-  std::cout<<"assertion passed '"<< operation <<"' = " << t <<std::endl;
+  std::cout<<" assertion passed   " <<std::endl;
 }
 
 void test_exception(const std::string & operation, const std::string& exception) {

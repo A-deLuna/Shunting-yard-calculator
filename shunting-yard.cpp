@@ -43,6 +43,7 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   std::vector<std::string> tokens = regex(infix_op);
   for(auto s = tokens.begin(); s != tokens.end(); ++s) {
     token = *s;
+    // std::cout<<token<<std::endl;
     if(is_number(token)) {
       if(is_number(previous_token)) {
         throw std::string("Too many operands");
@@ -109,8 +110,6 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
 }
 
 Number parse_number(std::string & tok) {
-  bool found_period = false;
-  bool found_E = false;
 
   int e_pos = tok.find("E");
 
@@ -123,8 +122,7 @@ Number parse_number(std::string & tok) {
     mantissa = tok.substr(0, e_pos);
     e = tok.substr(e_pos+1);
   }
-  Number n (mantissa, e);
-  return n;
+  return Number (mantissa, e);
 
 }
 
