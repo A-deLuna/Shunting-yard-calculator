@@ -33,7 +33,7 @@ void run() {
   //test_answer("4.75--8.43*--1.01=", "13.2643");
   test_answer("(3.2-((4.2+8.1)*2)-1)=", "-22.4");
   test_answer("1E1 - 2E-2=", "9.98");
-  test_answer("5--2E-2", "5.02");
+  test_answer("5--2E-2=", "5.02");
   //test_answer("4 + 3E", "");
   //test_answer("A * 2", "");
   //test_answer("6.5 - 2.5/2 = A", "");
@@ -92,13 +92,17 @@ int main(int argc, char **argv) {
       std::cout<< "Raised exception "<< msg << std::endl;
     }
   }
+  else if(argc == 3) {
+    test_answer(argv[1], argv[2]);
+  }
 }
 
 void test_answer(const std::string& operation, const std::string& result) {
   std::vector<std::string> v;
   Number n (result, "0");
   Number t = parse(operation, v); 
-  std::cout << "operation '" << operation << "',  " << t << " == " << result;
+  std::cout << "operation '" << operation << "',  got: " << t << ", expected: " << result << ", parsed as: " << n << "\n";
+  std::cout<< t.mantissa << ": E" <<t.exponent << "\n"; 
   assert(t == n);
   std::cout<<" assertion passed   " <<std::endl;
 }

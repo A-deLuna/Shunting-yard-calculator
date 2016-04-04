@@ -1,5 +1,5 @@
 #include "number.hpp"
-#include "iostream"
+#include <iostream>
 
 Number::Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent) 
   : mantissa(mantissa), exponent(exponent) {
@@ -23,7 +23,7 @@ void Number::normalize() {
   while(mantissa > dec::decimal_cast<PREC>(0) && mantissa < dec::decimal_cast<PREC>(1)) {
     shl();
   }
-  while(mantissa >= dec::decimal_cast<PREC>(10)) {
+  while(mantissa >= dec::decimal_cast<PREC>(10) || mantissa <= dec::decimal_cast<PREC>(-10)) {
     shr();
   }
 }
@@ -54,7 +54,10 @@ Number Number::operator-(const Number &b) {
 }
 
 Number Number::operator*(const Number &b) const {
+  //std::cout<< this -> mantissa << ": E" << this->exponent << "\n"; 
+  //std::cout<< b.mantissa << ": E" <<b.exponent << "\n"; 
   Number ans (this->mantissa * b.mantissa , this->exponent + b.exponent);
+  //std::cout<< ans.mantissa << ": E" <<ans.exponent << "\n"; 
   return ans;
 }
 

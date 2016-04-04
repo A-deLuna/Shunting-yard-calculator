@@ -12,13 +12,6 @@
 #include "left-paren.hpp"
 #include "right-paren.hpp"
 
-// TODO:(tony) roll my own number data type to accomodate
-// for project constrains
-// comment to previos todo, maybe its not necessary... we could
-// handle the logic in the eval methods, it's worth a thought later
-// Yet another entry... I've been thinking about using a fixed decimal data type
-// to hold the numbers
-
 
 // global state
 std::stack<Number> output_stack;
@@ -43,7 +36,7 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   std::vector<std::string> tokens = regex(infix_op);
   for(auto s = tokens.begin(); s != tokens.end(); ++s) {
     token = *s;
-    // std::cout<<token<<std::endl;
+    //std::cout<<token<<std::endl;
     if(is_number(token)) {
       if(is_number(previous_token)) {
         throw std::string("Too many operands");
@@ -128,8 +121,9 @@ Number parse_number(std::string & tok) {
 
 bool is_number(const std::string & exp) {
   if(exp.empty()) return false;
+  if(exp[0] == '-') return false;
   for (const char & c : exp) {
-    if(!(isdigit(c) || c == '.' || c == 'E'  )) return false;
+    if(!(isdigit(c) || c == '.' || c == 'E' || c == '-')) return false;
   }
   return true;
 }
@@ -138,7 +132,7 @@ Operator* get_operator(const std::string & token, Operator * previous_op) {
     return new Sum();
   }
   else if(token == "-") {
-    if(previous_op && (previous_op->sign() != '_')) {
+    if(previous_op && previous_op->sign() != '_' && previous_op->sign() != ')') {
       return new Negative();
     }
     return new Substraction();
