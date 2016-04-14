@@ -10,7 +10,7 @@ SRC_PATH = .
 # Space-separated pkg-config libraries used by this project
 LIBS =
 # General compiler flags
-COMPILE_FLAGS = -std=c++14 -Wall -Wextra -g -Wall -Wextra -D DEC_EXTERNAL_INT64
+COMPILE_FLAGS = -std=c++14 -Wall -Wextra -g -Wall -Wextra 
 # Additional release-specific flags
 RCOMPILE_FLAGS = 
 # Additional debug-specific flags

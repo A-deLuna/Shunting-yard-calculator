@@ -6,8 +6,19 @@ Number::Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent)
   normalize();
 }
 
-Number::Number(std::string mantissa, std::string exponent) 
-  : mantissa(mantissa), exponent(exponent) {
+Number::Number(std::string mantissa, std::string exponent) {
+    int e_pos = mantissa.find("E");
+
+    if(e_pos == std::string::npos) {
+        this->mantissa = dec::decimal<PREC>(mantissa);
+        this->exponent = dec::decimal<PREC>(exponent);
+    }
+    else {
+      std::string mant = mantissa.substr(0, e_pos);
+      std::string exp = mantissa.substr(e_pos+1);
+      this->mantissa = dec::decimal<PREC>(mant);
+      this->exponent = dec::decimal<PREC>(exp);
+    }
   normalize();
 }
 
@@ -25,6 +36,10 @@ void Number::normalize() {
   }
   while(mantissa >= dec::decimal_cast<PREC>(10) || mantissa <= dec::decimal_cast<PREC>(-10)) {
     shr();
+  }
+  // this fix is for the case 0.3333333 - 1/3 which has mantssa 0 but exponent -1
+  if( mantissa == dec::decimal_cast<PREC>(0)) {
+    exponent = dec::decimal_cast<PREC>(0);
   }
 }
 

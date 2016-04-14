@@ -41,7 +41,6 @@
 #include <sstream>
 #include <locale>
 
-
 // --> include headers for limits and int64_t
 
 #ifndef DEC_NO_CPP11
@@ -81,30 +80,6 @@
 
 namespace dec
 {
-inline std::ostream& operator<<( std::ostream& dest, __int128_t value )
-{
-    std::ostream::sentry s( dest );
-    if ( s ) {
-        __uint128_t tmp = value < 0 ? -value : value;
-        char buffer[ 128 ];
-        char* d = std::end( buffer );
-        do
-        {
-            -- d;
-            *d = "0123456789"[ tmp % 10 ];
-            tmp /= 10;
-        } while ( tmp != 0 );
-        if ( value < 0 ) {
-            -- d;
-            *d = '-';
-        }
-        int len = std::end( buffer ) - d;
-        if ( dest.rdbuf()->sputn( d, len ) != len ) {
-            dest.setstate( std::ios_base::badbit );
-        }
-    }
-    return dest;
-}
 
 // ----------------------------------------------------------------------------
 // Simple type definitions
@@ -123,8 +98,6 @@ typedef signed long long DEC_INT64;
 #endif
 #endif // DEC_EXTERNAL_INT64
 // <--
-//
-typedef __int128 DEC_INT64;
 
 typedef DEC_INT64 int64;
 // type for storing currency value internally
@@ -174,12 +147,8 @@ inline int64 round(T value) {
 }
 
 // calculate output = round(a / b), where output, a, b are int64
-inline int64  abs(int64 x) {
-  if(x < 0)  return -x;
-  return x;
-}
 inline bool div_rounded(int64 &output, int64 a, int64 b) {
-    int64 divisorCorr = abs(b) / 2;
+    int64 divisorCorr = std::abs(b) / 2;
     if (a >= 0) {
         if (DEC_MAX_INT64 - a >= divisorCorr) {
             output = (a + divisorCorr) / b;

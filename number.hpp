@@ -1,7 +1,7 @@
 #ifndef NUMBER_HPP
 #define NUMBER_HPP
 #include "decimal.h"
-#define PREC 9
+#define PREC 7
 class Number {
 public:
   Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent);
@@ -40,8 +40,8 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
   // this wont wont with exponents like 0.5. Let's worry about that later thou
   Number a(n);
 
-  if(a.exponent < dec::decimal_cast<PREC>(10) && 
-     a.exponent > dec::decimal_cast<PREC>(-10)) {
+  if(a.exponent < dec::decimal_cast<PREC>(8) && 
+     a.exponent > dec::decimal_cast<PREC>(-8)) {
     while(a.exponent != dec::decimal_cast<PREC>(0)) {
       if(a.exponent < dec::decimal_cast<PREC>(0)) {
         a.shr();
@@ -64,7 +64,7 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
   out << mant.substr(0, pos);
 
   if(a.exponent != dec::decimal_cast<PREC>(0)) {
-    s.clear();
+    s.str("");
     s << a.exponent;
     std::string exp = s.str();
     pos = exp.find('.');
