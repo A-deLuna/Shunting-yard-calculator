@@ -81,6 +81,40 @@ Number Number::operator/(const Number &b) const {
   return ans;
 }
 
+Number abs(Number n) {
+  if(n < Number("0","0")) return -n;
+  return n;
+}
+
+Number sqrt(Number a, Number b) {
+  // cant take sqrt of negative number
+  if(a < Number ("0", "0")) 
+    throw std::string("negative sqrt exception");
+
+  Number current = a;
+  Number previous = Number("1", "1");
+  do {
+    previous = current;
+    current = (previous + a / previous) / Number("2", "0");
+  } while(abs(previous - current) > Number("0.0000001", "0"));
+  return current;
+
+}
+
+Number exp(Number a, Number b) {
+  if(b < Number("0", "0")) return exp(Number("1","0") / a, -b);
+  if(b == Number("0","0")) return Number("1","0");
+  if(b == Number("1","0")) return a;
+  if(b < Number("1", "0")) return sqrt(a, b);
+
+  return a * exp(a, b-Number("1", "0"));
+}
+
+Number Number::operator^(const Number &b) const {
+  
+  return exp(*this, b);
+}
+
 Number Number::operator-() const {
   Number n ("-1", "0");
   return *this * n;

@@ -14,6 +14,7 @@ public:
   Number operator-(const Number &b);
   Number operator*(const Number &b) const;
   Number operator/(const Number &b) const;
+  Number operator^(const Number &b) const;
   void shl();
   void shr();
   dec::decimal<PREC> mantissa;
@@ -23,6 +24,14 @@ private:
 };
 
 inline bool operator<(const Number &a, const Number &b) {
+  if(a.mantissa == dec::decimal_cast<PREC>(0)) {
+    return b.mantissa > dec::decimal_cast<PREC>(0);
+  } 
+
+  if(b.mantissa == dec::decimal_cast<PREC>(0)) {
+    return a.mantissa < dec::decimal_cast<PREC>(0);
+  }
+
   if(a.exponent < b.exponent) return true;
   if(a.exponent > b.exponent) return false;
   return a.mantissa <  b.mantissa;

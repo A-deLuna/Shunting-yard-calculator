@@ -47,17 +47,17 @@ void run() {
   test_answer("3/5 - 0.59999999 =", "0.0000001");
   // TODO: CHECK THIS ONE LATER
   test_answer("1/2*2.0000001=", "1.0000001");
-//  test_answer("1-(-4)^(1/2)=", "");
-//  test_answer("(1-1)/2=", "");
-//  test_answer("2/(1-1)=", "");
-//  test_answer("4^-5=", "");
-//  test_answer("1 + 1* 1/1=", "");
+//test_answer("1-(-4)^(1/2)=", "");
+  test_answer("(1-1)/2=", "0");
+  test_answer("4^-5=", "0.0009766");
+  test_answer("1 + 1* 1/1=", "");
   
   test_exception("+=", "Too few operands");
   test_exception("5++ 3 =", "Too few operands");
   test_exception("5 -+3 =", "Too few operands");
   test_exception("5 - --3 =", "Too few operands");
   test_exception("5 /0 =", "Division by zero");
+  test_exception("2/(1-1)=", "Division by zero");
 //  test_exception("1000000000000 =", "Integer Overflow");
 //  test_exception("999999999999 + 1 =", "Integer Overflow");
 //  test_exception("999999999999 * 2 =", "Integer Overflow");

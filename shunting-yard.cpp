@@ -11,6 +11,7 @@
 #include "negative.hpp"
 #include "left-paren.hpp"
 #include "right-paren.hpp"
+#include "power.hpp"
 
 
 // global state
@@ -148,6 +149,9 @@ Operator* get_operator(const std::string & token, Operator * previous_op) {
   }
   else if(token == ")") {
     return new RightParen();
+  }
+  else if(token == "^") {
+    return new Power();
   }
   else {
     return nullptr;
