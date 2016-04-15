@@ -81,12 +81,12 @@ Number Number::operator/(const Number &b) const {
   return ans;
 }
 
-Number abs(Number n) {
+Number Number::abs(Number n) {
   if(n < Number("0","0")) return -n;
   return n;
 }
 
-Number sqrt(Number a, Number b) {
+Number Number::sqrt(Number a) {
   // cant take sqrt of negative number
   if(a < Number ("0", "0")) 
     throw std::string("negative sqrt exception");
@@ -101,18 +101,55 @@ Number sqrt(Number a, Number b) {
 
 }
 
-Number exp(Number a, Number b) {
+Number Number::factorial (int n) {
+  if(n == 0) return Number ("1", "0");
+  if(n == 1) return Number ("1", "0");
+  return Number(n, 0) * factorial(n-1);
+}
+
+Number Number::exp(Number a, Number b) {
   if(b < Number("0", "0")) return exp(Number("1","0") / a, -b);
   if(b == Number("0","0")) return Number("1","0");
   if(b == Number("1","0")) return a;
-  if(b < Number("1", "0")) return sqrt(a, b);
 
-  return a * exp(a, b-Number("1", "0"));
+  return a * exp(a , b - Number("1", "0"));
 }
 
-Number Number::operator^(const Number &b) const {
+Number Number::decimalExp(Number power) {
+  int ITERS = 27;
+  Number result("1","0");
+  for(int iter = 0; iter < 27; iter++ ) {
+    Number factoria = factorial(iter);
+    result = result + exp(power, Number(iter, 0)) / factoria;
+  }
+  std::cout << result
+  return result;
+}
+
+Number Number::LogN(Number number) {
+  Number aux = number - Number(1, 0);
+
+  Number result = Number(0,0);
+
+  for(int iter = 1; iter < 27; iter++) {
+    if(iter % 2 == 0) {
+      result = result - exp(aux, Number(iter,0)) / Number(iter,0);
+    }
+    else {
+      result = result + exp(aux, Number(iter,0)) / Number(iter,0);
+    }
+  }
+  return result;
+}
+
+Number Number::pow(Number a, Number b) {
+
+  return decimalExp(b * LogN(a));
+}
+
+Number Number::operator^(const Number &b) {
   
-  return exp(*this, b);
+  return pow(*this, b);
 }
 
 Number Number::operator-() const {

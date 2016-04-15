@@ -14,13 +14,20 @@ public:
   Number operator-(const Number &b);
   Number operator*(const Number &b) const;
   Number operator/(const Number &b) const;
-  Number operator^(const Number &b) const;
+  Number operator^(const Number &b);
   void shl();
   void shr();
   dec::decimal<PREC> mantissa;
   dec::decimal<PREC> exponent;
 private:
   void normalize();
+  Number abs(Number n);
+  Number sqrt(Number a);
+  Number exp(Number a, Number b);
+  Number pow(Number a, Number b);
+  Number factorial (int n);
+  Number decimalExp(Number power);
+  Number LogN(Number number);
 };
 
 inline bool operator<(const Number &a, const Number &b) {
@@ -43,6 +50,13 @@ inline bool operator>(const Number &a, const Number &b) {
 }
 inline bool operator==(const Number &a, const Number &b) {
   return a.exponent == b.exponent && a.mantissa == b.mantissa;
+}
+inline bool operator<=(const Number &a, const Number &b) {
+  return a < b || a == b;
+}
+
+inline bool operator>=(const Number &a, const Number &b) {
+  return a > b || a == b;
 }
 
 inline std::ostream& operator<<(std::ostream& out, const Number &n) {
