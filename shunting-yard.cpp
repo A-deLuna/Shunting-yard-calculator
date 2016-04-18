@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <map>
 #include <stack>
 #include "operator_interface.hpp"
 #include "sum.hpp"
@@ -19,6 +20,8 @@ std::stack<Number> output_stack;
 // TODO refactor to use std::shared_ptr
 std::stack<Operator *> operator_stack;
 
+std::map<std::string, Number> var_map;
+
 bool is_number(const std::string & exp);
 Operator* get_operator(const std::string & token, Operator * previous_op);
 void evaluate(Operator* op, std::vector<std::string> & out_ops);
@@ -35,6 +38,7 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   // when previous_op is null it means that the last token was not an operation
   Operator * previous_op = new Sum();
   std::vector<std::string> tokens = regex(infix_op);
+  std::string last_token = "";
   for(auto s = tokens.begin(); s != tokens.end(); ++s) {
     token = *s;
     //std::cout<<token<<std::endl;
@@ -79,6 +83,8 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
     }
     
     else if(token == "=") {
+      if(s+1 != tokens.end())
+        last_token = *(s+1);
       break;
     }
     // unknown token
@@ -100,11 +106,21 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   if(token != "=") {
     throw std::string("Missing =");
   }
+
+  if(!last_token.empty()) {
+    if(var_map.find(last_token) != var_map.end()) {
+      var_map[last_token] = output_stack.top();
+      std::cout << var_map[last_token] << '\n';
+    }
+  }
   return output_stack.empty() ? Number("0", "0") : output_stack.top();
 }
 
 Number parse_number(std::string & tok) {
 
+  if(tok == "A" || tok == "B"||tok == "C") {
+    return var_map[tok];
+  }
   int e_pos = tok.find("E");
 
   std::string mantissa;
@@ -123,6 +139,7 @@ Number parse_number(std::string & tok) {
 bool is_number(const std::string & exp) {
   if(exp.empty()) return false;
   if(exp[0] == '-') return false;
+  if(exp == "A" || exp == "B"||exp == "C") return true;
   for (const char & c : exp) {
     if(!(isdigit(c) || c == '.' || c == 'E' || c == '-')) return false;
   }
@@ -196,4 +213,9 @@ void prepare() {
   while(!operator_stack.empty()) {
     operator_stack.pop();
   }
+  // this is a hack to make sure we have initialized every variable
+  // whenevery you access a map key with no value it is initialized by default
+  var_map["A"];
+  var_map["B"];
+  var_map["C"];
 }

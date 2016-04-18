@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include <iostream>
 #include "shunting-yard.hpp"
+#include "number.hpp"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -25,16 +26,18 @@ void MainWindow::onReturnPressed() {
     ui->lineEdit_4->setText("");
     ui->lineEdit_5->setText("");
     try {
-        long long ans = parse(s, v);
-        ui->lineEdit_4->setText(toBase(ans, 2).c_str());
-        ui->lineEdit_5->setText(toBase(ans, 16).c_str());
+        Number ans = parse(s, v);
+        //ui->lineEdit_4->setText(toBase(ans, 2).c_str());
+        //ui->lineEdit_5->setText(toBase(ans, 16).c_str());
 
 
         for(auto op : v) {
             ui->plainTextEdit->appendPlainText(op.c_str());
         }
-
-        ui->lineEdit_2->setText(std::to_string(ans).c_str());
+        std::stringstream s;
+        s << ans;
+        ui->lineEdit_2->setText(s.str().c_str());
+        s.str() = "";
     }
     catch(std::string exception) {
         ui->lineEdit_3->setText(exception.c_str());

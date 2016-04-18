@@ -35,11 +35,11 @@ void run() {
   test_answer("1E1 - 2E-2=", "9.98");
   test_answer("5--2E-2=", "5.02");
   //test_answer("4 + 3E", "");
-  //test_answer("A * 2", "");
-  //test_answer("6.5 - 2.5/2 = A", "");
-  //test_answer(*2.5 = "B", "");
-  //test_answer("A + B = C", "");
-  //test_answer("C =", "");
+  test_answer("A * 2=", "0");
+  test_answer("6.5 - 2.5/2 = A", "5.25");
+  test_answer("3*2.5 = B", "7.5");
+  test_answer("A + B = C", "12.75");
+  test_answer("C =", "12.75");
   test_answer("12345678 * 100=", "1234567800");
   test_answer("999999999+3=", "1000000002");
   test_answer("99999*99999*2000=", "1.99996E13");

@@ -21,7 +21,12 @@ SOURCES += main.cpp\
     shunting-yard.cpp \
     substraction.cpp \
     sum.cpp \
-    tobase.cpp
+    tobase.cpp \
+    test.cpp \
+    right-paren.cpp \
+    power.cpp \
+    number.cpp \
+    left-paren.cpp
 
 HEADERS  += mainwindow.h \
     division.hpp \
@@ -30,7 +35,12 @@ HEADERS  += mainwindow.h \
     operator_interface.hpp \
     shunting-yard.hpp \
     substraction.hpp \
-    sum.hpp
+    sum.hpp \
+    right-paren.hpp \
+    power.hpp \
+    number.hpp \
+    left-paren.hpp \
+    decimal.h
 
 FORMS    += mainwindow.ui
 
