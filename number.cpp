@@ -1,5 +1,6 @@
 #include "number.hpp"
 #include <iostream>
+#define ROOT_PREC "0.000001"
 
 Number::Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent) 
   : mantissa(mantissa), exponent(exponent) {
@@ -81,70 +82,26 @@ Number Number::operator/(const Number &b) const {
   return ans;
 }
 
-Number Number::abs(Number n) {
-  if(n < Number("0","0")) return -n;
-  return n;
+Number Number::operator-() const {
+  Number n ("-1", "0");
+  return *this * n;
 }
 
-Number Number::sqrt(Number a) {
-  // cant take sqrt of negative number
-  if(a < Number ("0", "0")) 
-    throw std::string("negative sqrt exception");
+bool Number::operator<(const Number &b) const {
+  if(this->mantissa == dec::decimal_cast<PREC>(0)) {
+    return b.mantissa > dec::decimal_cast<PREC>(0);
+  } 
 
-  Number current = a;
-  Number previous = Number("1", "1");
-  do {
-    previous = current;
-    current = (previous + a / previous) / Number("2", "0");
-  } while(abs(previous - current) > Number("0.0000001", "0"));
-  return current;
-
-}
-
-Number Number::factorial (int n) {
-  if(n == 0) return Number ("1", "0");
-  if(n == 1) return Number ("1", "0");
-  return Number(n, 0) * factorial(n-1);
-}
-
-Number Number::exp(Number a, Number b) {
-  if(b < Number("0", "0")) return exp(Number("1","0") / a, -b);
-  if(b == Number("0","0")) return Number("1","0");
-  if(b == Number("1","0")) return a;
-
-  return a * exp(a , b - Number("1", "0"));
-}
-
-Number Number::decimalExp(Number power) {
-  int ITERS = 27;
-  Number result("1","0");
-  for(int iter = 0; iter < 27; iter++ ) {
-    Number factoria = factorial(iter);
-    result = result + exp(power, Number(iter, 0)) / factoria;
+  if(b.mantissa == dec::decimal_cast<PREC>(0)) {
+    return this->mantissa < dec::decimal_cast<PREC>(0);
   }
-  std::cout << result
-  return result;
+
+  if(this->exponent < b.exponent) return true;
+  if(this->exponent > b.exponent) return false;
+  return this->mantissa <  b.mantissa;
 }
-
-Number Number::LogN(Number number) {
-  Number aux = number - Number(1, 0);
-
-  Number result = Number(0,0);
-
-  for(int iter = 1; iter < 27; iter++) {
-    if(iter % 2 == 0) {
-      result = result - exp(aux, Number(iter,0)) / Number(iter,0);
-    }
-    else {
-      result = result + exp(aux, Number(iter,0)) / Number(iter,0);
-    }
-  }
-  return result;
-}
-
-Number Number::pow(Number a, Number b) {
-
-  return decimalExp(b * LogN(a));
+bool Number::operator==(const Number &b) const {
+  return this->exponent == b.exponent && this->mantissa == b.mantissa;
 }
 
 Number Number::operator^(const Number &b) {
@@ -152,10 +109,110 @@ Number Number::operator^(const Number &b) {
   return pow(*this, b);
 }
 
-Number Number::operator-() const {
-  Number n ("-1", "0");
-  return *this * n;
+
+Number Number::abs(Number n) {
+  if(n < Number("0","0")) return -n;
+  return n;
 }
+
+Number Number::pow(Number x, Number y) {
+  if(powers.find(std::make_pair(x, y)) != powers.end()) {
+    //std::cout<< "MAP HIT" << "\n";
+    return powers[std::make_pair(x, y)];
+  }
+  if(y == Number(0,0)) {
+    Number ans = Number(1,0);
+    powers[std::make_pair(x, y)] = ans;
+    return ans;
+  }
+  if(y == Number(1,0)) {
+    Number ans = x;
+    powers[std::make_pair(x, y)] = ans;
+    return ans;
+  }
+  if(y < Number(0,0)) {
+    return pow(Number(1,0) / x, -y);
+  }
+  if(y.isRational()) {
+    Number aux(y);
+    aux.toZeroExp();
+    dec::int64 before, after;
+    aux.mantissa.unpack(before, after);
+    bool beganWithZero = before == 0;
+    dec::int64 copy;
+    while(after != 0) {
+      aux.mantissa *= dec::decimal_cast<PREC>(10);
+      aux.mantissa.unpack(before, after);
+    }
+    int count = 1;
+    copy = before;
+    while(before != 0) {
+      before /= 10;
+      count *= 10;
+    }
+    if(!beganWithZero) {
+      count /= 10;
+    }
+    //std::cout << x << ":" <<Number(copy,0) << ":" << pow(x, Number(copy, 0)) << " : " << Number(count,0);
+    Number ans = nthRoot(pow(x, Number(copy, 0)), Number(count, 0));
+    powers[std::make_pair(x, y)] = ans;
+    std::cout << powers.size() << "\n";
+    //for(auto & x : powers) {
+      //std::cout << x.first.first << "^" << x.first.second << " = " <<  x.second <<'\n';
+    //}
+    return ans;
+
+  }
+  Number ans = x * pow(x, y-Number(1,0));
+  powers[std::make_pair(x, y)] = ans;
+  return ans;
+
+}
+Number Number::nthRoot(Number a, Number n) {
+  // cant take sqrt of negative number
+  if(a < Number ("0", "0")) 
+    throw std::string("negative sqrt exception");
+
+  Number d = Number(a.exponent,dec::decimal_cast<PREC>(0));
+  Number current =  Number(2,0) ^ (d / n) ;
+  Number previous = Number("1", "1");
+  Number aux = n - Number("1","0");
+  do {
+    previous = current;
+    current = (aux * previous + a / pow(previous, aux)) / n;
+    //std::cout<<"CALLED NTHROOT" << "\n";
+    //std::cout<< abs(previous - current)<< "\n";
+  } while(abs(previous - current) > Number(ROOT_PREC, "0"));
+  return current;
+
+}
+
+bool Number::isRational() const {
+  if(this->exponent >= dec::decimal_cast<PREC>(PREC + 1)) {
+    return false;
+  }
+  Number aux(*this);
+  aux.toZeroExp();
+
+  dec::int64 before, after;
+  aux.mantissa.unpack(before, after);
+  if(after == 0) {
+    return false;
+  }
+
+  return true;
+}
+
+void Number::toZeroExp() {
+  while(this->exponent < dec::decimal_cast<PREC>(0)) {
+    this->shr();
+  }
+
+  while(this->exponent > dec::decimal_cast<PREC>(0)) {
+    this->shl();
+  }
+}
+
 
 void Number::shl() {
   mantissa *= dec::decimal_cast<PREC>(10);

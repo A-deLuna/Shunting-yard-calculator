@@ -1,6 +1,8 @@
 #ifndef NUMBER_HPP
 #define NUMBER_HPP
 #include "decimal.h"
+#include <map>
+#include <utility>
 #define PREC 7
 class Number {
 public:
@@ -15,42 +17,27 @@ public:
   Number operator*(const Number &b) const;
   Number operator/(const Number &b) const;
   Number operator^(const Number &b);
+  bool operator<(const Number &b) const;
+  bool operator==(const Number &b) const;
+  bool isRational() const;
   void shl();
   void shr();
   dec::decimal<PREC> mantissa;
   dec::decimal<PREC> exponent;
 private:
+  void toZeroExp();
   void normalize();
   Number abs(Number n);
-  Number sqrt(Number a);
-  Number exp(Number a, Number b);
-  Number pow(Number a, Number b);
-  Number factorial (int n);
-  Number decimalExp(Number power);
-  Number LogN(Number number);
+  Number pow(Number x, Number y);
+  Number nthRoot(Number a, Number n);
 };
-
-inline bool operator<(const Number &a, const Number &b) {
-  if(a.mantissa == dec::decimal_cast<PREC>(0)) {
-    return b.mantissa > dec::decimal_cast<PREC>(0);
-  } 
-
-  if(b.mantissa == dec::decimal_cast<PREC>(0)) {
-    return a.mantissa < dec::decimal_cast<PREC>(0);
-  }
-
-  if(a.exponent < b.exponent) return true;
-  if(a.exponent > b.exponent) return false;
-  return a.mantissa <  b.mantissa;
-}
+static std::map<std::pair<Number, Number> , Number > powers;
 
 
 inline bool operator>(const Number &a, const Number &b) {
   return b < a;
 }
-inline bool operator==(const Number &a, const Number &b) {
-  return a.exponent == b.exponent && a.mantissa == b.mantissa;
-}
+
 inline bool operator<=(const Number &a, const Number &b) {
   return a < b || a == b;
 }
