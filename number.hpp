@@ -80,9 +80,9 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
     if(before != 0) {
       au = before;
       dec::decimal<PREC-1> aux = dec::decimal_cast<PREC-1>(a.mantissa);
-      std::cout<< "DEBUG BEFORE" << a.mantissa << '\n';
+      //std::cout<< "DEBUG BEFORE" << a.mantissa << '\n';
       a.mantissa = dec::decimal_cast<PREC>(aux);
-      std::cout<< "DEBUG AFTER" << a.mantissa << '\n';
+      //std::cout<< "DEBUG AFTER" << a.mantissa << '\n';
       a.mantissa.unpack(before, after) ;
       if(au < before) {
         a.shr();
