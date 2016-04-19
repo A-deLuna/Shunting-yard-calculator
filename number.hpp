@@ -3,8 +3,9 @@
 #include "decimal.h"
 #include <map>
 #include <utility>
-#define PREC 7
-class Number {
+#include <iostream>
+#define PREC 8 
+class Number { 
 public:
   Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent);
   Number(std::string mantissa, std::string exponent);
@@ -24,9 +25,9 @@ public:
   void shr();
   dec::decimal<PREC> mantissa;
   dec::decimal<PREC> exponent;
+  void normalize();
 private:
   void toZeroExp();
-  void normalize();
   Number abs(Number n);
   Number pow(Number x, Number y);
   Number nthRoot(Number a, Number n);
@@ -50,8 +51,9 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
   // this wont wont with exponents like 0.5. Let's worry about that later thou
   Number a(n);
 
+  //0.00000001
   if(a.exponent < dec::decimal_cast<PREC>(8) && 
-     a.exponent > dec::decimal_cast<PREC>(-8)) {
+     a.exponent > dec::decimal_cast<PREC>(-9)) {
     while(a.exponent != dec::decimal_cast<PREC>(0)) {
       if(a.exponent < dec::decimal_cast<PREC>(0)) {
         a.shr();
@@ -62,7 +64,32 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
     }
     
   }
+  //if(a.exponent < dec::decimal_cast<PREC>(8) && a.exponent > dec::decimal_cast<PREC>(0)) {
+  //  a.shl();
+  //}
+  //if(a.exponent > dec::decimal_cast<PREC>(-9) && a.exponent < dec::decimal_cast<PREC>(-1)) {
+  //  a.shr();
+  //}
+
   std::stringstream s;
+
+  //std::cout<<"EXPONTENT" << a.exponent << '\n';
+  //if(a.exponent == dec::decimal_cast<PREC>(0)) {
+    dec::int64 before, after, au;
+    a.mantissa.unpack(before, after) ;
+    if(before != 0) {
+      au = before;
+      dec::decimal<PREC-1> aux = dec::decimal_cast<PREC-1>(a.mantissa);
+      std::cout<< "DEBUG BEFORE" << a.mantissa << '\n';
+      a.mantissa = dec::decimal_cast<PREC>(aux);
+      std::cout<< "DEBUG AFTER" << a.mantissa << '\n';
+      a.mantissa.unpack(before, after) ;
+      if(au < before) {
+        a.shr();
+      }
+    }
+  //}
+
   s << a.mantissa;
   std::string mant = s.str();
   int pos = mant.find_last_not_of("0");
