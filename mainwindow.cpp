@@ -4,17 +4,24 @@
 #include <iostream>
 #include "shunting-yard.hpp"
 #include "number.hpp"
+#include "helpdialog.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     QObject::connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(onReturnPressed()));
+    QObject::connect(ui->pushButton, SIGNAL(clicked(bool)), this, SLOT(onButtonClick()));
     ui->plainTextEdit->setReadOnly(true);
     ui->lineEdit_2->setReadOnly(true);
     ui->lineEdit_3->setReadOnly(true);
-    ui->lineEdit_4->setReadOnly(true);
-    ui->lineEdit_5->setReadOnly(true);
+   // ui->lineEdit_4->setReadOnly(true);
+    //ui->lineEdit_5->setReadOnly(true);
+}
+
+void MainWindow::onButtonClick() {
+    HelpDialog d;
+    d.exec();
 }
 
 void MainWindow::onReturnPressed() {
@@ -23,8 +30,8 @@ void MainWindow::onReturnPressed() {
     ui->plainTextEdit->setPlainText("");
     ui->lineEdit_2->setText("");
     ui->lineEdit_3->setText("");
-    ui->lineEdit_4->setText("");
-    ui->lineEdit_5->setText("");
+    //ui->lineEdit_4->setText("");
+    //ui->lineEdit_5->setText("");
     try {
         Number ans = parse(s, v);
         //ui->lineEdit_4->setText(toBase(ans, 2).c_str());

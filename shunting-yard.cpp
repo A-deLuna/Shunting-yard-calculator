@@ -110,7 +110,10 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   if(!last_token.empty()) {
     if(var_map.find(last_token) != var_map.end()) {
       var_map[last_token] = output_stack.top();
-      std::cout << var_map[last_token] << '\n';
+      std::stringstream ss;
+      ss << output_stack.top();
+      out_ops.push_back(last_token + "= " + ss.str());
+      //std::cout << var_map[last_token] << '\n';
     }
   }
   return output_stack.empty() ? Number("0", "0") : output_stack.top();

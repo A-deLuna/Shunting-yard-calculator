@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     right-paren.cpp \
     power.cpp \
     number.cpp \
-    left-paren.cpp
+    left-paren.cpp \
+    helpdialog.cpp
 
 HEADERS  += mainwindow.h \
     division.hpp \
@@ -40,8 +41,10 @@ HEADERS  += mainwindow.h \
     power.hpp \
     number.hpp \
     left-paren.hpp \
-    decimal.h
+    decimal.h \
+    helpdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    helpdialog.ui
 
 CONFIG += c++14

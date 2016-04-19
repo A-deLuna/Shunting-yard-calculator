@@ -47,6 +47,14 @@ inline bool operator>=(const Number &a, const Number &b) {
   return a > b || a == b;
 }
 
+inline int numbersize(dec::int64 n) {
+  int count = 0;
+  while(n) {
+    count++;
+    n/=10;
+  }
+  return count;
+}
 inline std::ostream& operator<<(std::ostream& out, const Number &n) {
   // this wont wont with exponents like 0.5. Let's worry about that later thou
   Number a(n);
@@ -72,23 +80,77 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
   //}
 
   std::stringstream s;
-
-  //std::cout<<"EXPONTENT" << a.exponent << '\n';
-  //if(a.exponent == dec::decimal_cast<PREC>(0)) {
-    dec::int64 before, after, au;
-    a.mantissa.unpack(before, after) ;
-    if(before != 0) {
-      au = before;
-      dec::decimal<PREC-1> aux = dec::decimal_cast<PREC-1>(a.mantissa);
-      //std::cout<< "DEBUG BEFORE" << a.mantissa << '\n';
-      a.mantissa = dec::decimal_cast<PREC>(aux);
-      //std::cout<< "DEBUG AFTER" << a.mantissa << '\n';
-      a.mantissa.unpack(before, after) ;
-      if(au < before) {
-        a.shr();
+  dec::int64 before, after, au;
+  a.mantissa.unpack(before, after) ;
+  if(before != 0) {
+    au = before;
+    int i = numbersize(before);
+      if(i == 1) {
+        dec::decimal<PREC-1> aux = dec::decimal_cast<PREC-1>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+        a.mantissa.unpack(before, after) ;
+        if(au < before) {
+          a.shr();
+        }
       }
-    }
-  //}
+      if(i == 2) {
+        dec::decimal<PREC-2> aux = dec::decimal_cast<PREC-2>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+        a.mantissa.unpack(before, after) ;
+        if(au < before) {
+          a.shr();
+        }
+      }
+      if(i == 3) {
+        dec::decimal<PREC-3> aux = dec::decimal_cast<PREC-3>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+        a.mantissa.unpack(before, after) ;
+        if(au < before) {
+          a.shr();
+        }
+      }
+      if(i == 4) {
+        dec::decimal<PREC-4> aux = dec::decimal_cast<PREC-4>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+        a.mantissa.unpack(before, after) ;
+        if(au < before) {
+          a.shr();
+        }
+      }
+      if(i == 5) {
+        dec::decimal<PREC-5> aux = dec::decimal_cast<PREC-5>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+        a.mantissa.unpack(before, after) ;
+        if(au < before) {
+          a.shr();
+        }
+      }
+      if(i == 6) {
+        dec::decimal<PREC-6> aux = dec::decimal_cast<PREC-6>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+        a.mantissa.unpack(before, after) ;
+        if(au < before) {
+          a.shr();
+        }
+      }
+      if(i == 7) {
+        dec::decimal<PREC-7> aux = dec::decimal_cast<PREC-7>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+        a.mantissa.unpack(before, after) ;
+        if(au < before) {
+          a.shr();
+        }
+      }
+      if(i == 8) {
+        dec::decimal<PREC-8> aux = dec::decimal_cast<PREC-8>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+        a.mantissa.unpack(before, after) ;
+        //if(au < before) {
+        //  a.shr();
+        //}
+      }
+    
+  }
 
   s << a.mantissa;
   std::string mant = s.str();

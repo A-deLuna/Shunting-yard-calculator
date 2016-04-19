@@ -69,7 +69,7 @@ void run() {
   test_exception("(55=", "mismatched parens");
   test_exception("55)=", "mismatched parens");
   test_exception("(3-(2+((4*2.1)-1)=", "mismatched parens");
-  test_answer("4.75--8.43*--1.01=", "Too few operands");
+  test_exception("4.75--8.43*--1.01=", "Too few operands");
 }
 
 int main(int argc, char **argv) {

@@ -18,6 +18,7 @@ public:
 
 public slots:
     void onReturnPressed();
+    void onButtonClick();
 
 private:
     Ui::MainWindow *ui;
