@@ -24,6 +24,7 @@ std::stack<Operator *> operator_stack;
 std::map<std::string, Number> var_map;
 
 bool is_number(const std::string & exp);
+bool is_variable(const std::string & exp);
 Operator* get_operator(const std::string & token, Operator * previous_op);
 void evaluate(Operator* op, std::vector<std::string> & out_ops);
 void prepare();
@@ -47,13 +48,24 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
       if(is_number(previous_token)) {
         throw std::string("Too many operands");
       }
+      if(previous_op && previous_op->sign() == ')') {
+        throw std::string("Missing operation between paretheses");
+      }
       Number i = parse_number(token);
 
+      if(is_variable(token)) {
+        std::stringstream g;
+        g << i;
+        out_ops.push_back(token + "= " + g.str());
+      }
       output_stack.push(i);
       previous_op = nullptr;
     }
     else if((op = get_operator(token, previous_op)) != nullptr) {
       if(op->sign() == '(') {
+        if(!previous_op || (previous_op && previous_op->sign() == ')' )) {
+          throw std::string("Missing operation between paretheses");
+        }
         operator_stack.push(op);
       } else if(op->sign() == ')') {
         while(!operator_stack.empty() && operator_stack.top()->sign() != '(') {
@@ -145,6 +157,9 @@ bool is_number(const std::string & exp) {
     if(!(isdigit(c) || c == '.' || c == 'E' || c == '-')) return false;
   }
   return true;
+}
+bool is_variable(const std::string & exp) {
+  if(exp == "A" || exp == "B"||exp == "C") return true;
 }
 Operator* get_operator(const std::string & token, Operator * previous_op) {
   if(token == "+") {
