@@ -30,7 +30,7 @@ public:
 private:
   void toZeroExp();
   Number pow(Number x, Number y);
-  Number nthRoot(Number a, Number n);
+  Number nthRoot(Number x, Number a, Number n);
 };
 static std::map<std::pair<Number, Number> , Number > powers;
 

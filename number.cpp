@@ -116,18 +116,12 @@ Number Number::abs(Number n) {
 }
 
 Number Number::pow(Number x, Number y) {
-  if(powers.find(std::make_pair(x, y)) != powers.end()) {
-    //std::cout<< "MAP HIT" << "\n";
-    return powers[std::make_pair(x, y)];
-  }
   if(y == Number(0,0)) {
     Number ans = Number(1,0);
-    powers[std::make_pair(x, y)] = ans;
     return ans;
   }
   if(y == Number(1,0)) {
     Number ans = x;
-    powers[std::make_pair(x, y)] = ans;
     return ans;
   }
   if(y < Number(0,0)) {
@@ -154,9 +148,9 @@ Number Number::pow(Number x, Number y) {
       count /= 10;
     }
     //std::cout << x << ":" <<Number(copy,0) << ":" << pow(x, Number(copy, 0)) << " : " << Number(count,0);
-    Number ans = nthRoot(pow(x, Number(copy, 0)), Number(count, 0));
-    powers[std::make_pair(x, y)] = ans;
-    std::cout << powers.size() << "\n";
+    Number e = nthRoot(Number(1,0), x, Number("2","0"));
+    std::cout<< "DEBUG E: " << e <<'\n';
+    Number ans = nthRoot(e, pow(x, Number(copy, 0)), Number(count, 0));
     //for(auto & x : powers) {
       //std::cout << x.first.first << "^" << x.first.second << " = " <<  x.second <<'\n';
     //}
@@ -164,24 +158,24 @@ Number Number::pow(Number x, Number y) {
 
   }
   Number ans = x * pow(x, y-Number(1,0));
-  powers[std::make_pair(x, y)] = ans;
   return ans;
 
 }
-Number Number::nthRoot(Number a, Number n) {
+Number Number::nthRoot(Number x, Number a, Number n) {
   // cant take sqrt of negative number
   if(a < Number ("0", "0")) 
     throw std::string("negative sqrt exception");
 
   Number d = Number(a.exponent,dec::decimal_cast<PREC>(0));
-  Number current =  Number(2,0) ^ (d / n) ;
+  Number current =  x;
   Number previous = Number("1", "1");
   Number aux = n - Number("1","0");
   do {
+    std::cout<< current;
     previous = current;
     current = (aux * previous + a / pow(previous, aux)) / n;
     //std::cout<<"CALLED NTHROOT" << "\n";
-    //std::cout<< abs(previous - current)<< "\n";
+    std::cout<< ": "<< abs(previous - current)<< "\n";
   } while(abs(previous - current) > Number(ROOT_PREC, "0"));
   return current;
 
