@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>826</width>
-    <height>420</height>
+    <width>959</width>
+    <height>606</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,24 +19,32 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>40</y>
-     <width>691</width>
-     <height>331</height>
+     <x>30</x>
+     <y>20</y>
+     <width>881</width>
+     <height>551</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <pointsize>16</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+     <stylestrategy>PreferDefault</stylestrategy>
+     <kerning>true</kerning>
     </font>
    </property>
    <property name="plainText">
     <string>Bienvenido!
 Cosas a tomar en cuenta: 
 * La calculadora no truena con numeros con E &lt; -99 o E &gt; 99 (pero tampoco te pases de lanza)
+
 * Si metes un numero como 1.232435454545454
-o 12321432554545 solo los primeros 8 digitos son tomados en cuenta.
-*Por favor evita meter exponentes con muchs digitos, se pone lento, por ejemplo 2^0.3 es rapido pero 2^0.30000001 podria tardar dias... asi que porfa evitalo</string>
+o solo los primeros 8 digitos son tomados en cuenta, para numeros grandes, solo se aceptan de 11 digitos seguidos seguidos o no de un punto o E
+
+*Por favor evita meter exponentes con muchs digitos, se pone lento, de preferencia mete  solo dos digitos, por ejemplo 2^0.3 es rapido, 2^0.33 esta normal pero 2^0.333 y demas ya esta muy lento y podria tardar dias... asi que porfa evitalo
+
+*también para números como 1.2345E-6, al momento de mostrarlos a proposito se truncan  los digitos mas pequeños, enseñando 0.00000124. Preferí hacer esto porque así lo enseñaría mi casio :p</string>
    </property>
   </widget>
  </widget>
