@@ -26,9 +26,9 @@ public:
   dec::decimal<PREC> mantissa;
   dec::decimal<PREC> exponent;
   void normalize();
+  static Number abs(Number n);
 private:
   void toZeroExp();
-  Number abs(Number n);
   Number pow(Number x, Number y);
   Number nthRoot(Number a, Number n);
 };
