@@ -13,6 +13,7 @@
 #include "left-paren.hpp"
 #include "right-paren.hpp"
 #include "power.hpp"
+#include "negative_power.hpp"
 
 
 // global state
@@ -67,12 +68,9 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
       }
       else {
         while(!operator_stack.empty() &&
-                (
-                 (op->associativity() == assoc::LEFT && op->precedence() <= operator_stack.top()->precedence())
-                ||
-                (op->associativity() == assoc::RIGHT && op->precedence() < operator_stack.top()->precedence())
-                )
-              )
+          ( (op->associativity() == assoc::LEFT && op->precedence() <= operator_stack.top()->precedence())
+          ||
+          (op->associativity() == assoc::RIGHT && op->precedence() < operator_stack.top()->precedence())))
         {
           evaluate(operator_stack.top(), out_ops);
           operator_stack.pop();
@@ -171,7 +169,12 @@ Operator* get_operator(const std::string & token, Operator * previous_op) {
     return new RightParen();
   }
   else if(token == "^") {
-    return new Power();
+    if(previous_op && previous_op->sign() == ')') {
+      return new Power();
+    }
+    else {
+      return new NegativePower();
+    }
   }
   else {
     return nullptr;

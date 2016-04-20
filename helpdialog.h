@@ -1,3 +1,4 @@
+#ifndef TEST
 #ifndef HELPDIALOG_H
 #define HELPDIALOG_H
 
@@ -20,3 +21,4 @@ private:
 };
 
 #endif // HELPDIALOG_H
+#endif

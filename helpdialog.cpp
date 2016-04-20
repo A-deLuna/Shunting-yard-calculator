@@ -1,3 +1,4 @@
+#ifndef TEST
 #include "helpdialog.h"
 #include "ui_helpdialog.h"
 
@@ -12,3 +13,4 @@ HelpDialog::~HelpDialog()
 {
     delete ui;
 }
+#endif
