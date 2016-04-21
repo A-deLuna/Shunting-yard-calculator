@@ -149,13 +149,16 @@ Number parse_number(std::string & tok) {
   if(dot_pos != mantissa.rfind(".")) {
     throw std::string("Multiple dots exception");
   }
+  if(dot_pos == mantissa.size()-1) {
+    throw std::string("Can't end in dot exception");
+  }
+  if(dot_pos == 0) {
+    mantissa = "0" + mantissa;
+  }
   if(dot_pos == std::string::npos) {
     if(mantissa.size() >= 11) {
       throw std::string("Number too long exception");
     }
-  }
-  if(dot_pos == mantissa.size()-1) {
-    throw std::string("Can't end in dot exception");
   }
   else {
     if(mantissa.substr(0, dot_pos).size() >= 11) {

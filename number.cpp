@@ -134,22 +134,21 @@ Number Number::pow(Number x, Number y) {
     aux.mantissa.unpack(before, after);
     bool beganWithZero = before == 0;
     dec::int64 copy;
+    int count = 1;
     while(after != 0) {
       aux.mantissa *= dec::decimal_cast<PREC>(10);
       aux.mantissa.unpack(before, after);
-    }
-    int count = 1;
-    copy = before;
-    while(before != 0) {
-      before /= 10;
       count *= 10;
     }
-    if(!beganWithZero) {
-      count /= 10;
-    }
+    copy = before;
+    //std::cout<<"COUNT: " << count << '\n';
+    //if(!beganWithZero) {
+    //  count /= 10;
+    //}
+    //std::cout<<"COUNT: " << count << '\n';
     //std::cout << x << ":" <<Number(copy,0) << ":" << pow(x, Number(copy, 0)) << " : " << Number(count,0);
     Number e = nthRoot(Number(1,0), x, Number("2","0"));
-    std::cout<< "DEBUG E: " << e <<'\n';
+    //std::cout<< "DEBUG E: " << e <<'\n';
     Number ans = nthRoot(e, pow(x, Number(copy, 0)), Number(count, 0));
     //for(auto & x : powers) {
       //std::cout << x.first.first << "^" << x.first.second << " = " <<  x.second <<'\n';
@@ -157,7 +156,10 @@ Number Number::pow(Number x, Number y) {
     return ans;
 
   }
-  Number ans = x * pow(x, y-Number(1,0));
+  Number ans = Number ("1", "0");
+  for(Number i = Number("0","0"); i < y; i = i + Number("1","0")) {
+    ans = x * ans;
+  }
   return ans;
 
 }
@@ -171,11 +173,11 @@ Number Number::nthRoot(Number x, Number a, Number n) {
   Number previous = Number("1", "1");
   Number aux = n - Number("1","0");
   do {
-    std::cout<< current;
+    //std::cout<< current;
     previous = current;
     current = (aux * previous + a / pow(previous, aux)) / n;
     //std::cout<<"CALLED NTHROOT" << "\n";
-    std::cout<< ": "<< abs(previous - current)<< "\n";
+    //std::cout<< ": "<< abs(previous - current)<< "\n";
   } while(abs(previous - current) > Number(ROOT_PREC, "0"));
   return current;
 

@@ -49,6 +49,9 @@ void MainWindow::onReturnPressed() {
     catch(std::string exception) {
         ui->lineEdit_3->setText(exception.c_str());
     }
+    catch(...) {
+        ui->lineEdit_3->setText("ERROR");
+    }
 
 
 }
