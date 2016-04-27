@@ -53,6 +53,7 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
       }
       Number i = parse_number(token);
       if(i >= Number("10", "99") || i <= Number("-10", "99")) {
+        //std::cout<<i<<'\n'; 
         throw std::string("Number out of valid range");
       }
 
@@ -257,7 +258,8 @@ void evaluate(Operator* op, std::vector<std::string> & out_ops) {
   if(ans > Number("9.9999999E99", "0") || ans < Number("-9.9999999E99", "0")) {
     //std::cout<<(ans > Number("9.9999999E99", "0"))<<'\n';
     //std::cout<<(ans < Number("-9.9999999E99", "0"))<<'\n';
-    throw std::string("Number out of valid range");
+    //std::cout<<ans<<'\n'; 
+    throw std::string("Number out of valid range2 " );
   }
   output_stack.push(ans);
   delete op;

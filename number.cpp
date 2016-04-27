@@ -143,6 +143,7 @@ Number Number::pow(Number x, Number y) {
     return pow(Number(1,0) / x, -y);
   }
   if(y.isRational()) {
+    std::cout<<"RATIONAL" << '\n';
     dec::int64 numerator, denominator;
     if(y.isFractional(numerator, denominator)) {
     }
@@ -170,7 +171,10 @@ Number Number::pow(Number x, Number y) {
       if(denominator%2ll == 0) {
         throw std::string("negative root exception with even base");
       }
-      neg = Number("-1","0");
+      if(numerator%2ll == 1) {
+        neg = Number("-1","0");
+      }
+
       x = -x;
     }
 
@@ -180,9 +184,6 @@ Number Number::pow(Number x, Number y) {
   }
   Number ans = Number ("1", "0");
   for(Number i = Number("0","0"); i < y; i = i + Number("1","0")) {
-    if(ans > Number("9.9999999E99", "0") || ans < Number("-9.9999999E99", "0")) {
-      throw std::string("Number out of valid range");
-    }
     ans = x * ans;
   }
   return ans;
