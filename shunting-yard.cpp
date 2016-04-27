@@ -52,6 +52,9 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
         throw std::string("Missing operation between paretheses");
       }
       Number i = parse_number(token);
+      if(i >= Number("10", "99") || i <= Number("-10", "99")) {
+        throw std::string("Number out of valid range");
+      }
 
       if(is_variable(token)) {
         std::stringstream g;
@@ -120,6 +123,10 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   if(!last_token.empty()) {
     if(var_map.find(last_token) != var_map.end()) {
       var_map[last_token] = output_stack.top();
+      if(tokens[tokens.size()-1] != last_token) {
+        throw std::string("Warning, no more expressions after variable assignment");
+      }
+      // out ops A=
       std::stringstream ss;
       ss << output_stack.top();
       out_ops.push_back(last_token + "= " + ss.str());
@@ -145,6 +152,10 @@ Number parse_number(std::string & tok) {
     mantissa = tok.substr(0, e_pos);
     e = tok.substr(e_pos+1);
   }
+  // check if E has a point in it
+  if(e.find(".") != std::string::npos) {
+    throw std::string("E can't have a decimal point");
+  }
   int dot_pos = mantissa.find(".");
   if(dot_pos != mantissa.rfind(".")) {
     throw std::string("Multiple dots exception");
@@ -156,12 +167,12 @@ Number parse_number(std::string & tok) {
     mantissa = "0" + mantissa;
   }
   if(dot_pos == std::string::npos) {
-    if(mantissa.size() >= 11) {
+    if(mantissa.size() >= 9) {
       throw std::string("Number too long exception");
     }
   }
   else {
-    if(mantissa.substr(0, dot_pos).size() >= 11) {
+    if(mantissa.substr(0, dot_pos).size() >= 9) {
       throw std::string("Number too long exception");
     }
   }
@@ -243,6 +254,11 @@ void evaluate(Operator* op, std::vector<std::string> & out_ops) {
     out_ops.push_back(s.str());
   }
 
+  if(ans > Number("9.9999999E99", "0") || ans < Number("-9.9999999E99", "0")) {
+    //std::cout<<(ans > Number("9.9999999E99", "0"))<<'\n';
+    //std::cout<<(ans < Number("-9.9999999E99", "0"))<<'\n';
+    throw std::string("Number out of valid range");
+  }
   output_stack.push(ans);
   delete op;
 }

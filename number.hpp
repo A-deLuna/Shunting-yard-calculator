@@ -31,6 +31,12 @@ private:
   void toZeroExp();
   Number pow(Number x, Number y);
   Number nthRoot(Number x, Number a, Number n);
+  Number factorial (int n);
+  Number decimalExp(Number power);
+  Number ln(Number n);
+  Number preln(Number number);
+  bool isFractional(dec::int64 & numerator, dec::int64 &  denominator) const;
+  dec::int64 gcd(dec::int64 a, dec::int64 b);
 };
 static std::map<std::pair<Number, Number> , Number > powers;
 
