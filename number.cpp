@@ -45,8 +45,8 @@ void Number::normalize() {
 }
 
 Number Number::operator+(const Number &b) const {
-  Number smlr = std::min(*this, b);
-  Number gtr = std::max(*this, b);
+  Number smlr = ((*this).exponent < b.exponent) ? *this : b;
+  Number gtr = (this->exponent >= b.exponent ) ? *this: b;
 
   while(smlr.exponent < gtr.exponent) {
     smlr.shr();
@@ -58,8 +58,9 @@ Number Number::operator+(const Number &b) const {
 
 Number Number::operator-(const Number &b) {
   Number b_cpy(b);
-  Number * smlr =  (*this < b_cpy) ? this : &b_cpy;
-  Number gtr = std::max(*this, b_cpy);
+  Number * smlr =  ((*this).exponent < b_cpy.exponent) ? this : &b_cpy;
+  //std::cout<< *smlr << std::endl;
+  Number gtr = (this->exponent >= b_cpy.exponent ) ? *this: b_cpy;
 
   while(smlr->exponent < gtr.exponent) {
     smlr->shr();
@@ -143,7 +144,6 @@ Number Number::pow(Number x, Number y) {
     return pow(Number(1,0) / x, -y);
   }
   if(y.isRational()) {
-    std::cout<<"RATIONAL" << '\n';
     dec::int64 numerator, denominator;
     if(y.isFractional(numerator, denominator)) {
     }
@@ -166,6 +166,7 @@ Number Number::pow(Number x, Number y) {
     numerator /= g;
     denominator /= g;
     
+    //std::cout<<"Rl" << numerator << " " << denominator << '\n';
     Number neg = Number(1,0);
     if(x < Number(0,0)) {
       if(denominator%2ll == 0) {
@@ -178,6 +179,7 @@ Number Number::pow(Number x, Number y) {
       x = -x;
     }
 
+    //std::cout <<"x " <<  x << std::endl;
     Number a = y * preln(x);
     return neg * decimalExp(a);
 
@@ -210,13 +212,31 @@ Number Number::decimalExp(Number power) {
   return result;
 } 
 
+Number Number::ln2(Number number) {
+  Number x = number - Number(1, 0);
+
+  Number result = x;
+
+  for(int i = 2; i < 55; i++) {
+    if(i%2 == 0) {
+      result = result - (pow(x, Number(i,0)) / Number(i,0));
+    }
+    else {
+      result = result + (pow(x, Number(i,0)) / Number(i,0));
+    }
+  }
+  return result;
+
+}
 Number Number::ln(Number n) {
   Number x = (n - Number(1,0)) / (n + Number(1,0));
 
   Number ans = Number(0,0);
   for(int i = 1; i < 500 ; i += 2) {
     ans = ans +  Number(2,0) * pow(x, Number(i,0))/ Number(i,0) ;
+    //std::cout<<"insideln" << ans << '\n';
   }
+  //std::cout<<"insideln" << ans << '\n';
   return ans;
 }
 
@@ -229,7 +249,14 @@ Number Number::preln(Number number) {
   //cout << "number beforeLogN: " << number << '\n';
 
   //ln 281
-  return Number("5.6383546","0") * Number(i,0) + ln(number);
+  Number log;
+  if(number < Number(1,0)) {
+    log = ln(number);
+  }
+  else {
+    log = ln(number);
+  }
+  return Number("5.6383546","0") * Number(i,0) + log;
 }
 
 Number Number::nthRoot(Number x, Number a, Number n) {

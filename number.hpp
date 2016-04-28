@@ -34,6 +34,7 @@ private:
   Number factorial (int n);
   Number decimalExp(Number power);
   Number ln(Number n);
+  Number ln2(Number number);
   Number preln(Number number);
   bool isFractional(dec::int64 & numerator, dec::int64 &  denominator) const;
   dec::int64 gcd(dec::int64 a, dec::int64 b);
