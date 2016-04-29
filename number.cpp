@@ -181,8 +181,8 @@ Number Number::pow(Number x, Number y) {
 
     //std::cout <<"x " <<  x << std::endl;
     Number a = y * preln(x);
-    return neg * decimalExp(a);
-
+    Number ans = neg * decimalExp(a);
+    return ans;
   }
   Number ans = Number ("1", "0");
   for(Number i = Number("0","0"); i < y; i = i + Number("1","0")) {
@@ -280,11 +280,18 @@ Number Number::nthRoot(Number x, Number a, Number n) {
 }
 bool Number::isFractional(dec::int64 & numerator, dec::int64 & denominator) const {
   Number aux(*this);
+  //std::cout<<aux<<std::endl;
   Number ans = aux * Number(10,0) - aux;
+  //std::cout<<ans<<std::endl;
   dec::int64 before, after;
   ans.toZeroExp();
+  //std::cout<<ans<<std::endl;
   ans.mantissa.unpack(before, after);
-  std::string s = std::to_string(after);
+  std::stringstream b ; 
+  b<<ans.mantissa;
+  std::string  s= b.str();
+  s = s.substr(s.find(".")+1);
+  //std::cout<<s<<std::endl;
   if(after == 0) {
     numerator = (before ) ;
     denominator = 9 ;
