@@ -5,6 +5,13 @@
 #include <utility>
 #include <iostream>
 #define PREC 8 
+enum class Formato {
+  FIJO,
+  REAL,
+  NC,
+  ESTANDAR
+};
+
 class Number { 
 public:
   Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent);
@@ -27,17 +34,18 @@ public:
   dec::decimal<PREC> exponent;
   void normalize();
   static Number abs(Number n);
+  static Number nthRoot(Number a, Number n);
+  static Number pow(Number x, Number y);
+  static Number ln(Number n);
+  static Number ln2(Number number);
+  static Number preln(Number number);
+  static dec::int64 gcd(dec::int64 a, dec::int64 b);
+  static Number decimalExp(Number power);
+  static Number factorial (int n);
+  static Formato formato;
 private:
   void toZeroExp();
-  Number pow(Number x, Number y);
-  Number nthRoot(Number x, Number a, Number n);
-  Number factorial (int n);
-  Number decimalExp(Number power);
-  Number ln(Number n);
-  Number ln2(Number number);
-  Number preln(Number number);
   bool isFractional(dec::int64 & numerator, dec::int64 &  denominator) const;
-  dec::int64 gcd(dec::int64 a, dec::int64 b);
 };
 static std::map<std::pair<Number, Number> , Number > powers;
 
@@ -62,7 +70,8 @@ inline int numbersize(dec::int64 n) {
   }
   return count;
 }
-inline std::ostream& operator<<(std::ostream& out, const Number &n) {
+
+inline std::ostream& estandar(std::ostream& out, const Number &n) {
   // this wont wont with exponents like 0.5. Let's worry about that later thou
   Number a(n);
 
@@ -79,13 +88,8 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
     }
     
   }
-  //if(a.exponent < dec::decimal_cast<PREC>(8) && a.exponent > dec::decimal_cast<PREC>(0)) {
-  //  a.shl();
-  //}
-  //if(a.exponent > dec::decimal_cast<PREC>(-9) && a.exponent < dec::decimal_cast<PREC>(-1)) {
-  //  a.shr();
-  //}
 
+  // esta pendejada es para cuando despues de llevar el exponente a cero nos queda algo como 1234.343435455, pero queremos solo imprimir 1234.3434 asi que lo que hacemos es castearlo a la precision adecuada
   std::stringstream s;
   dec::int64 before, after, au;
   a.mantissa.unpack(before, after) ;
@@ -153,9 +157,21 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
         a.mantissa = dec::decimal_cast<PREC>(aux);
         a.mantissa.unpack(before, after) ;
         //if(au < before) {
-        //  a.shr();
-        //}
+        //  a.shr(); }
       }
+    
+  }
+  //copy pasterino rip
+  if(a.exponent < dec::decimal_cast<PREC>(8) && 
+     a.exponent > dec::decimal_cast<PREC>(-9)) {
+    while(a.exponent != dec::decimal_cast<PREC>(0)) {
+      if(a.exponent < dec::decimal_cast<PREC>(0)) {
+        a.shr();
+      }
+      else {
+        a.shl();
+      }
+    }
     
   }
 
@@ -177,6 +193,35 @@ inline std::ostream& operator<<(std::ostream& out, const Number &n) {
     out << 'E' << exp.substr(0,pos);
   }
   return out;
+
+}
+inline std::ostream& notacion(std::ostream& out, const Number &n) {
+  std::stringstream s;
+  s << n.mantissa;
+  std::string mant = s.str();
+  int pos = mant.find_last_not_of("0");
+  if( pos != std::string::npos) {
+    if(mant[pos] != '.'){
+      pos++;
+    }
+  }
+  out << mant.substr(0, pos);
+  s.str("");
+  s << n.exponent;
+  std::string exp = s.str();
+  pos = exp.find('.');
+  out << 'E' << exp.substr(0,pos);
+  return out;
+
+}
+inline std::ostream& operator<<(std::ostream& out, const Number &n) {
+  switch(Number::formato) {
+    case Formato::NC: return notacion(out, n);
+    //case Formato::FIJO: return estandar(out, n);
+    case Formato::ESTANDAR: return estandar(out, n);
+
+    default: return estandar(out, n);
+  }
 }
 
 #endif

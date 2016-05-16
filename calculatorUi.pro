@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     number.cpp \
     left-paren.cpp \
     helpdialog.cpp \
-    negative_power.cpp
+    negative_power.cpp \
+    root.cpp
 
 HEADERS  += mainwindow.h \
     division.hpp \
@@ -44,7 +45,8 @@ HEADERS  += mainwindow.h \
     left-paren.hpp \
     decimal.h \
     helpdialog.h \
-    negative_power.hpp
+    negative_power.hpp \
+    root.hpp
 
 FORMS    += mainwindow.ui \
     helpdialog.ui

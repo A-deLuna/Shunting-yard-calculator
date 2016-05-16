@@ -14,6 +14,7 @@
 #include "right-paren.hpp"
 #include "power.hpp"
 #include "negative_power.hpp"
+#include "root.hpp"
 
 
 // global state
@@ -26,21 +27,108 @@ std::map<std::string, Number> var_map;
 bool is_number(const std::string & exp);
 bool is_variable(const std::string & exp);
 Operator* get_operator(const std::string & token, Operator * previous_op);
+Operator* get_function_op(const std::string & token);
 void evaluate(Operator* op, std::vector<std::string> & out_ops);
+void evaluate_function(Operator* op, std::vector<std::string> & out_ops);
 void prepare();
 Number parse_number(std::string & tok);
+Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string> & out_ops, bool boolean_exp);
 
 Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
-  prepare();
   std::stringstream stream(infix_op);
-  std::string token;
-  std::string previous_token;
-  Operator * op;
   // start previous_op with a dummy value
   // when previous_op is null it means that the last token was not an operation
-  Operator * previous_op = new Sum();
   std::vector<std::string> tokens = regex(infix_op);
+  if(!tokens.empty() && tokens[0] == "FORMATO") {
+    if(tokens.size() <= 1) {
+      throw std::string("invalid format syntax");
+    }
+    if(tokens[1] == "FIJO" || tokens[1] == "fijo") {
+      Number::formato = Formato::FIJO;
+      if(tokens.size() <= 2) throw std::string("invalid format syntax");
+    }
+    else if(tokens[1] == "REAL" || tokens[1] == "real") {
+      Number::formato = Formato::REAL;
+    }
+    else if(tokens[1] == "NC" || tokens[1] == "nc") {
+      Number::formato = Formato::NC;
+    }
+    else if(tokens[1] == "ESTANDAR" || tokens[1] == "estandar") {
+      Number::formato = Formato::ESTANDAR;
+    }
+    else {
+      throw std::string("invalid format syntax");
+    }
+    return Number("0","0");
+
+  } 
+  if(tokens[0] == "SI" && tokens[1] == "[") {
+    if(tokens[tokens.size() -1] != ")") {
+      throw std::string("error en parentesis");
+    }
+    bool found_entonces, found_sino = false;
+    int i, j;
+    // acuerdate que cuando i salga de este loop va a estar incrementado en 1,
+    // igual en j AAGUAAANTA CREO QUE ES MENTIRA POR EL BREAK
+    for(i = 2; i < tokens.size() - 2; i++) {
+      if(tokens[i] == "]" && tokens[i+1] == "ENTONCES" && tokens[i+2] == "(") {
+        std::cout << "ENCONTRE ENTONCES!!" << '\n';
+        found_entonces = true;
+        break;
+      }
+    }
+    for(j = i; j < tokens.size()-2; j++) {
+      if(tokens[j] == ")" && tokens[j+1] == "SINO" && tokens[j+2] == "(") {
+        std::cout << "ENCONTRE SINO!!" << '\n';
+        found_sino = true;
+        break;
+      }
+    }
+    if(!found_entonces) {
+      throw std::string("syntax error");
+    }
+    else {
+      if(found_sino) {
+        std::vector<std::string> copy(&tokens[2], &tokens[i]);
+        Number b = shunting_yard(copy, out_ops, true);
+        if(!(b == Number("0","0"))) {
+          std::cout<<"TRUE" << '\n';
+          std::vector<std::string> copy(&tokens[i+3], &tokens[j]);
+          return shunting_yard (copy, out_ops, false);
+        }
+        else {
+          std::cout<<"FALSE" << '\n';
+          std::vector<std::string> copy(&tokens[j+3], &tokens[tokens.size()-1]);
+          return shunting_yard (copy, out_ops, false);
+        }
+      }
+      else {
+        std::vector<std::string> copy(&tokens[2], &tokens[i]);
+        Number b = shunting_yard(copy, out_ops, true);
+        if(!(b == Number("0","0"))) {
+          std::cout<<"TRUE" << '\n';
+          std::vector<std::string> copy(&tokens[i+3], &tokens[tokens.size()-1]);
+          return shunting_yard (copy, out_ops, false);
+        }
+        else {
+          std::cout<<"FALSE" << '\n';
+        }
+      }
+    }
+    return Number("0","0");
+
+  }
+  return shunting_yard(tokens, out_ops, false);
+}
+
+Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string> & out_ops, bool boolean_exp = false) {
+  prepare();
+  std::string previous_token;
+  Operator * op;
+  Operator * previous_op = new Sum();
   std::string last_token = "";
+  std::string token;
+
   for(auto s = tokens.begin(); s != tokens.end(); ++s) {
     token = *s;
     //std::cout<<token<<std::endl;
@@ -65,6 +153,21 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
       output_stack.push(i);
       previous_op = nullptr;
     }
+    else if((op = get_function_op(token)) != nullptr) {
+      operator_stack.push(op);
+    }
+
+    else if (token == ",") {
+        while(!operator_stack.empty() && operator_stack.top()->sign() != '(') {
+          evaluate(operator_stack.top(), out_ops);
+          operator_stack.pop();
+        }
+        // error
+        if(operator_stack.empty()) {
+          throw std::string("mismatched parens");
+        }
+    }
+
     else if((op = get_operator(token, previous_op)) != nullptr) {
       if(op->sign() == '(') {
         if(!previous_op || (previous_op && previous_op->sign() == ')' )) {
@@ -81,6 +184,10 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
           throw std::string("mismatched parens");
         }
         operator_stack.pop();
+        if(!operator_stack.empty() && operator_stack.top()->sign() == 'r') {
+          evaluate_function(operator_stack.top(), out_ops);
+          operator_stack.pop();
+        }
       }
       else {
         while(!operator_stack.empty() &&
@@ -95,8 +202,8 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
       }
       previous_op = op;
     }
-    
-    else if(token == "=") {
+
+    else if(token == "=" && !boolean_exp) {
       if(s+1 != tokens.end())
         last_token = *(s+1);
       break;
@@ -117,11 +224,11 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
     evaluate(op, out_ops);
   }
 
-  if(token != "=") {
+  if(token != "=" && !boolean_exp) {
     throw std::string("Missing =");
   }
 
-  if(!last_token.empty()) {
+  if(!last_token.empty() && !boolean_exp) {
     if(var_map.find(last_token) != var_map.end()) {
       var_map[last_token] = output_stack.top();
       if(tokens[tokens.size()-1] != last_token) {
@@ -133,9 +240,15 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
       out_ops.push_back(last_token + "= " + ss.str());
       //std::cout << var_map[last_token] << '\n';
     }
+    else {
+      throw std::string("Warning, no more expressions after =");
+    }
+
   }
   return output_stack.empty() ? Number("0", "0") : output_stack.top();
+
 }
+
 
 Number parse_number(std::string & tok) {
 
@@ -193,6 +306,7 @@ bool is_number(const std::string & exp) {
 bool is_variable(const std::string & exp) {
   if(exp == "A" || exp == "B"||exp == "C") return true;
 }
+
 Operator* get_operator(const std::string & token, Operator * previous_op) {
   if(token == "+") {
     return new Sum();
@@ -227,7 +341,32 @@ Operator* get_operator(const std::string & token, Operator * previous_op) {
     return nullptr;
   }
 }
+Operator* get_function_op(const std::string & token) {
+  if(token == "ROOT" | token == "root") return new Root();
+  return nullptr;
+}
 
+void evaluate_function(Operator* op, std::vector<std::string> & out_ops) {
+  if(output_stack.empty()) {
+    throw std::string("Too few operands");
+  }
+  Number ans;
+  std::stringstream s;
+
+  Number a = output_stack.top();
+  output_stack.pop();
+
+  if(output_stack.empty()) {
+    throw std::string("Too few operands");
+  }
+  Number b = output_stack.top();
+  output_stack.pop();
+  ans = op->eval(a, b);
+  s << "root(" << b << ", " <<  a << ") = " << ans;
+  out_ops.push_back(s.str());
+  output_stack.push(ans);
+  delete op;
+}
 void evaluate(Operator* op, std::vector<std::string> & out_ops) {
   if(output_stack.empty()) {
     throw std::string("Too few operands");

@@ -2,6 +2,7 @@
 #include <iostream>
 #define ROOT_PREC "0.000001"
 
+Formato Number::formato = Formato::ESTANDAR;
 Number::Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent) 
   : mantissa(mantissa), exponent(exponent) {
   normalize();
@@ -259,13 +260,13 @@ Number Number::preln(Number number) {
   return Number("5.6383546","0") * Number(i,0) + log;
 }
 
-Number Number::nthRoot(Number x, Number a, Number n) {
+Number Number::nthRoot(Number a, Number n) {
   // cant take sqrt of negative number
   if(a < Number ("0", "0")) 
     throw std::string("negative sqrt exception");
 
   Number d = Number(a.exponent,dec::decimal_cast<PREC>(0));
-  Number current =  x;
+  Number current =  Number("1","0");
   Number previous = Number("1", "1");
   Number aux = n - Number("1","0");
   do {
