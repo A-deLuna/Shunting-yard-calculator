@@ -1,6 +1,6 @@
 #include "number.hpp"
 #include <iostream>
-#define ROOT_PREC "0.000001"
+#define ROOT_PREC "0.000000001"
 
 Formato Number::formato = Formato::ESTANDAR;
 Number::Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent) 
@@ -118,7 +118,8 @@ bool Number::operator<(const Number &b) const {
   return this->mantissa <  b.mantissa;
 }
 bool Number::operator==(const Number &b) const {
-  return this->exponent == b.exponent && this->mantissa == b.mantissa;
+  return this->exponent == b.exponent && 
+    (this->mantissa - b.mantissa).abs() < dec::decimal_cast<PREC>(0.000001);
 }
 
 Number Number::operator^(const Number &b) {

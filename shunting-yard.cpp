@@ -15,6 +15,7 @@
 #include "power.hpp"
 #include "negative_power.hpp"
 #include "root.hpp"
+#include "equality.hpp"
 
 
 // global state
@@ -26,7 +27,7 @@ std::map<std::string, Number> var_map;
 
 bool is_number(const std::string & exp);
 bool is_variable(const std::string & exp);
-Operator* get_operator(const std::string & token, Operator * previous_op);
+Operator* get_operator(const std::string & token, Operator * previous_op, bool boolean_exp);
 Operator* get_function_op(const std::string & token);
 void evaluate(Operator* op, std::vector<std::string> & out_ops);
 void evaluate_function(Operator* op, std::vector<std::string> & out_ops);
@@ -168,7 +169,7 @@ Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string>
         }
     }
 
-    else if((op = get_operator(token, previous_op)) != nullptr) {
+    else if((op = get_operator(token, previous_op, boolean_exp)) != nullptr) {
       if(op->sign() == '(') {
         if(!previous_op || (previous_op && previous_op->sign() == ')' )) {
           throw std::string("Missing operation between paretheses");
@@ -307,7 +308,7 @@ bool is_variable(const std::string & exp) {
   if(exp == "A" || exp == "B"||exp == "C") return true;
 }
 
-Operator* get_operator(const std::string & token, Operator * previous_op) {
+Operator* get_operator(const std::string & token, Operator * previous_op, bool boolean_exp) {
   if(token == "+") {
     return new Sum();
   }
@@ -336,6 +337,9 @@ Operator* get_operator(const std::string & token, Operator * previous_op) {
     else {
       return new NegativePower();
     }
+  }
+  else if(token == "=" && boolean_exp) {
+    return new Equality();
   }
   else {
     return nullptr;
