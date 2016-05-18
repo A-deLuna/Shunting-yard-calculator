@@ -16,6 +16,8 @@
 #include "negative_power.hpp"
 #include "root.hpp"
 #include "equality.hpp"
+#include "less_than.hpp"
+#include "greater_than.hpp"
 
 
 // global state
@@ -340,6 +342,12 @@ Operator* get_operator(const std::string & token, Operator * previous_op, bool b
   }
   else if(token == "=" && boolean_exp) {
     return new Equality();
+  }
+  else if(token == "<" && boolean_exp) {
+    return new LessThan();
+  }
+  else if(token == ">" && boolean_exp) {
+    return new GreaterThan();
   }
   else {
     return nullptr;
