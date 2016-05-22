@@ -18,6 +18,7 @@
 #include "equality.hpp"
 #include "less_than.hpp"
 #include "greater_than.hpp"
+#include "less_than_or_equal.hpp"
 
 
 // global state
@@ -348,6 +349,9 @@ Operator* get_operator(const std::string & token, Operator * previous_op, bool b
   }
   else if(token == ">" && boolean_exp) {
     return new GreaterThan();
+  }
+  else if(token == "<=" && boolean_exp) {
+    return new LessThanOrEqual();
   }
   else {
     return nullptr;
