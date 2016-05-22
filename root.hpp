@@ -7,6 +7,6 @@ class Root : public Operator {
   Number eval(Number a, Number b) override;
   int precedence() override;
   int associativity() override;
-  char sign() override;
+  std::string sign() override;
 };
 #endif

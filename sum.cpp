@@ -19,6 +19,6 @@ int Sum::arity() {
   return 2;
 }
 
-char Sum::sign() {
-  return '+';
+std::string Sum::sign() {
+  return "+";
 }

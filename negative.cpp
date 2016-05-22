@@ -16,6 +16,6 @@ int Negative::arity() {
   return 1;
 }
 
-char Negative::sign() {
-  return '_';
+std::string Negative::sign() {
+  return "_";
 }

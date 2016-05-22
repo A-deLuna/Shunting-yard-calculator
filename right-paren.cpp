@@ -1,7 +1,7 @@
 #include "right-paren.hpp"
 
-char RightParen::sign() {
-  return ')';
+std::string RightParen::sign() {
+  return ")";
 }
 
 int RightParen::associativity() {

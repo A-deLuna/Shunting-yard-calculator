@@ -17,6 +17,6 @@ int GreaterThan::arity() {
   return 2;
 }
 
-char GreaterThan::sign() {
-  return '>';
+std::string GreaterThan::sign() {
+  return ">";
 }

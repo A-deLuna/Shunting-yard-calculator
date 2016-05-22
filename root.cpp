@@ -4,8 +4,8 @@ Number Root::eval(Number a, Number b) {
   return Number::nthRoot(a, b) ; 
 }
 
-char Root::sign() {
-  return 'r';
+std::string Root::sign() {
+  return "r";
 }
 
 int Root::associativity() {

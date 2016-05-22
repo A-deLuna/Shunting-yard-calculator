@@ -17,6 +17,6 @@ int LessThan::arity() {
   return 2;
 }
 
-char LessThan::sign() {
-  return '<';
+std::string LessThan::sign() {
+  return "<";
 }

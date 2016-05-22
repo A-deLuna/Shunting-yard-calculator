@@ -23,6 +23,6 @@ int Multiplication::arity() {
     return 2;
 }
 
-char Multiplication::sign() {
-  return '*';
+std::string Multiplication::sign() {
+  return "*";
 }

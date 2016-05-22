@@ -16,6 +16,6 @@ int Power::arity() {
   return 2;
 }
 
-char Power::sign() {
-  return '^';
+std::string Power::sign() {
+  return "^";
 }

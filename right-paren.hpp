@@ -5,7 +5,7 @@
 
 class RightParen: public Operator {
 public: 
-  char sign() override;
+  std::string sign() override;
   int associativity() override;
   int precedence() override;
 };

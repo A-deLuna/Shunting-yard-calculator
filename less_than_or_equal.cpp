@@ -16,6 +16,6 @@ int LessThanOrEqual::arity() {
   return 2;
 }
 
-char LessThanOrEqual::sign() {
-  return 'l';
+std::string LessThanOrEqual::sign() {
+  return "<=";
 }

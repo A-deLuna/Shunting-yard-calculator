@@ -9,6 +9,6 @@ public:
   int precedence() override;
   int associativity() override;
   int arity() override;
-  char sign() override;
+  std::string sign() override;
 };
 #endif

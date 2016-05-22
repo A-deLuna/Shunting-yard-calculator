@@ -1,7 +1,7 @@
 #include "left-paren.hpp"
 
-char LeftParen::sign() {
-  return '(';
+std::string LeftParen::sign() {
+  return "(";
 }
 
 int LeftParen::associativity() {

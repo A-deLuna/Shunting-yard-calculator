@@ -20,6 +20,6 @@ int NegativePower::arity() {
   return 2;
 }
 
-char NegativePower::sign() {
-  return '^';
+std::string NegativePower::sign() {
+  return "^";
 }

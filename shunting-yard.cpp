@@ -19,6 +19,10 @@
 #include "less_than.hpp"
 #include "greater_than.hpp"
 #include "less_than_or_equal.hpp"
+#include "greater_than_or_equal.hpp"
+#include "not_equal.hpp"
+#include "and.hpp"
+#include "or.hpp"
 
 
 // global state
@@ -43,7 +47,7 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   // start previous_op with a dummy value
   // when previous_op is null it means that the last token was not an operation
   std::vector<std::string> tokens = regex(infix_op);
-  if(!tokens.empty() && tokens[0] == "FORMATO") {
+  if(!tokens.empty() && (tokens[0] == "FORMATO" || tokens[0] == "formato")) {
     if(tokens.size() <= 1) {
       throw std::string("invalid format syntax");
     }
@@ -140,7 +144,7 @@ Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string>
       if(is_number(previous_token)) {
         throw std::string("Too many operands");
       }
-      if(previous_op && previous_op->sign() == ')') {
+      if(previous_op && previous_op->sign() == ")") {
         throw std::string("Missing operation between paretheses");
       }
       Number i = parse_number(token);
@@ -162,7 +166,7 @@ Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string>
     }
 
     else if (token == ",") {
-        while(!operator_stack.empty() && operator_stack.top()->sign() != '(') {
+        while(!operator_stack.empty() && operator_stack.top()->sign() != "(") {
           evaluate(operator_stack.top(), out_ops);
           operator_stack.pop();
         }
@@ -173,13 +177,13 @@ Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string>
     }
 
     else if((op = get_operator(token, previous_op, boolean_exp)) != nullptr) {
-      if(op->sign() == '(') {
-        if(!previous_op || (previous_op && previous_op->sign() == ')' )) {
+      if(op->sign() == "(") {
+        if(!previous_op || (previous_op && previous_op->sign() == ")" )) {
           throw std::string("Missing operation between paretheses");
         }
         operator_stack.push(op);
-      } else if(op->sign() == ')') {
-        while(!operator_stack.empty() && operator_stack.top()->sign() != '(') {
+      } else if(op->sign() == ")") {
+        while(!operator_stack.empty() && operator_stack.top()->sign() != "(") {
           evaluate(operator_stack.top(), out_ops);
           operator_stack.pop();
         }
@@ -188,7 +192,7 @@ Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string>
           throw std::string("mismatched parens");
         }
         operator_stack.pop();
-        if(!operator_stack.empty() && operator_stack.top()->sign() == 'r') {
+        if(!operator_stack.empty() && operator_stack.top()->sign() == "r") {
           evaluate_function(operator_stack.top(), out_ops);
           operator_stack.pop();
         }
@@ -221,7 +225,7 @@ Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string>
 
   while(!operator_stack.empty()) {
     op = operator_stack.top();
-    if(op->sign() == '(') {
+    if(op->sign() == "(") {
       throw std::string("mismatched parens");
     }
     operator_stack.pop();
@@ -316,7 +320,7 @@ Operator* get_operator(const std::string & token, Operator * previous_op, bool b
     return new Sum();
   }
   else if(token == "-") {
-    if(previous_op && previous_op->sign() != '_' && previous_op->sign() != ')') {
+    if(previous_op && previous_op->sign() != "_" && previous_op->sign() != ")") {
       return new Negative();
     }
     return new Substraction();
@@ -334,7 +338,7 @@ Operator* get_operator(const std::string & token, Operator * previous_op, bool b
     return new RightParen();
   }
   else if(token == "^") {
-    if(previous_op && previous_op->sign() == ')') {
+    if(previous_op && previous_op->sign() == ")") {
       return new Power();
     }
     else {
@@ -352,6 +356,18 @@ Operator* get_operator(const std::string & token, Operator * previous_op, bool b
   }
   else if(token == "<=" && boolean_exp) {
     return new LessThanOrEqual();
+  }
+  else if(token == ">=" && boolean_exp) {
+    return new GreaterThanOrEqual();
+  }
+  else if(token == "<>" && boolean_exp) {
+    return new NotEqual();
+  }
+  else if((token == "AND" || token == "and") && boolean_exp) {
+    return new And();
+  }
+  else if((token == "OR" || token == "or") && boolean_exp) {
+    return new Or();
   }
   else {
     return nullptr;

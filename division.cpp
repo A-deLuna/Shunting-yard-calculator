@@ -20,6 +20,6 @@ int Division::arity() {
     return 2;
 }
 
-char Division::sign() {
-  return '/';
+std::string Division::sign() {
+  return "/";
 }

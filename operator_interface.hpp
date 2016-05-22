@@ -4,6 +4,7 @@
 #define MAX_NUM 999999999999LL
 #define MIN_NUM -999999999999LL
 #include "number.hpp"
+#include <string>
 
 enum assoc {NONE, LEFT, RIGHT };
 
@@ -13,7 +14,7 @@ public:
   virtual int precedence() {}
   virtual int associativity() {}
   virtual int arity() {}
-  virtual char sign() {}
+  virtual std::string sign() {}
   virtual ~Operator() {}
 };
 #endif

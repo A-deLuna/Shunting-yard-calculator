@@ -23,6 +23,6 @@ int Substraction::associativity() {
 int Substraction::arity() {
   return 2;
 }
-char Substraction::sign() {
-  return '-';
+std::string Substraction::sign() {
+  return "-";
 }

@@ -17,6 +17,6 @@ int Equality::arity() {
   return 2;
 }
 
-char Equality::sign() {
-  return '=';
+std::string Equality::sign() {
+  return "=";
 }
