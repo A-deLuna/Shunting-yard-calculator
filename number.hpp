@@ -7,8 +7,7 @@
 #define PREC 8 
 enum class Formato {
   FIJO,
-  REAL,
-  NC,
+  REAL, NC,
   ESTANDAR
 };
 
@@ -43,6 +42,7 @@ public:
   static Number decimalExp(Number power);
   static Number factorial (int n);
   static Formato formato;
+  static long fijo_size;
 private:
   void toZeroExp();
   bool isFractional(dec::int64 & numerator, dec::int64 &  denominator) const;
@@ -71,7 +71,7 @@ inline int numbersize(dec::int64 n) {
   return count;
 }
 
-inline std::ostream& estandar(std::ostream& out, const Number &n) {
+inline std::string estandar(const Number &n) {
   // this wont wont with exponents like 0.5. Let's worry about that later thou
   Number a(n);
 
@@ -89,7 +89,9 @@ inline std::ostream& estandar(std::ostream& out, const Number &n) {
     
   }
 
-  // esta pendejada es para cuando despues de llevar el exponente a cero nos queda algo como 1234.343435455, pero queremos solo imprimir 1234.3434 asi que lo que hacemos es castearlo a la precision adecuada
+  // esta pendejada es para cuando despues de llevar el exponente a cero nos 
+  // queda algo como 1234.343435455, pero queremos solo imprimir 1234.3434 
+  // asi que lo que hacemos es castearlo a la precision adecuada
   std::stringstream s;
   dec::int64 before, after, au;
   a.mantissa.unpack(before, after) ;
@@ -183,20 +185,22 @@ inline std::ostream& estandar(std::ostream& out, const Number &n) {
       pos++;
     }
   }
-  out << mant.substr(0, pos);
+  std::stringstream ans;
+  ans << mant.substr(0, pos);
 
   if(a.exponent != dec::decimal_cast<PREC>(0)) {
     s.str("");
     s << a.exponent;
     std::string exp = s.str();
     pos = exp.find('.');
-    out << 'E' << exp.substr(0,pos);
+    ans << 'E' << exp.substr(0,pos);
   }
-  return out;
+  return ans.str();
 
 }
-inline std::ostream& notacion(std::ostream& out, const Number &n) {
+inline std::string notacion(const Number &n) {
   std::stringstream s;
+  std::stringstream ans;
   s << n.mantissa;
   std::string mant = s.str();
   int pos = mant.find_last_not_of("0");
@@ -205,23 +209,131 @@ inline std::ostream& notacion(std::ostream& out, const Number &n) {
       pos++;
     }
   }
-  out << mant.substr(0, pos);
+  ans << mant.substr(0, pos);
   s.str("");
   s << n.exponent;
   std::string exp = s.str();
   pos = exp.find('.');
-  out << 'E' << exp.substr(0,pos);
-  return out;
+  ans << 'E' << exp.substr(0,pos);
+  return ans.str();
 
 }
+inline std::string real(const Number& n) {
+  std::stringstream ans;
+  std::string num = estandar(n);
+  if(num.find(".") == std::string::npos) {
+    num +=".0";
+  }
+
+  ans << num;
+  return ans.str();
+}
+inline std::string fijo(const Number& n) {
+  std::stringstream ans;
+  std::string num = real(n);
+  Number a(n);
+  int pos = num.find(".");
+  int decimals = num.size() - pos - 1;
+
+  if(decimals < Number::fijo_size) {
+    for(int i = 0; i < Number::fijo_size - decimals; ++i)  {
+      num += "0";
+    }
+  }
+  if (decimals > Number::fijo_size) {
+    std::stringstream s;
+    dec::int64 before, after, au;
+    a.mantissa.unpack(before, after) ;
+    if(before != 0) {
+      au = before;
+      int i = numbersize(before) +  (8-Number::fijo_size) -1;
+        if(i == 1) {
+          dec::decimal<PREC-1> aux = dec::decimal_cast<PREC-1>(a.mantissa);
+          a.mantissa = dec::decimal_cast<PREC>(aux);
+          a.mantissa.unpack(before, after) ;
+          if(au < before) {
+            a.shr();
+          }
+        }
+        if(i == 2) {
+          dec::decimal<PREC-2> aux = dec::decimal_cast<PREC-2>(a.mantissa);
+          a.mantissa = dec::decimal_cast<PREC>(aux);
+          a.mantissa.unpack(before, after) ;
+          if(au < before) {
+            a.shr();
+          }
+        }
+        if(i == 3) {
+          dec::decimal<PREC-3> aux = dec::decimal_cast<PREC-3>(a.mantissa);
+          a.mantissa = dec::decimal_cast<PREC>(aux);
+          a.mantissa.unpack(before, after) ;
+          if(au < before) {
+            a.shr();
+          }
+        }
+        if(i == 4) {
+          dec::decimal<PREC-4> aux = dec::decimal_cast<PREC-4>(a.mantissa);
+          a.mantissa = dec::decimal_cast<PREC>(aux);
+          a.mantissa.unpack(before, after) ;
+          if(au < before) {
+            a.shr();
+          }
+        }
+        if(i == 5) {
+          dec::decimal<PREC-5> aux = dec::decimal_cast<PREC-5>(a.mantissa);
+          a.mantissa = dec::decimal_cast<PREC>(aux);
+          a.mantissa.unpack(before, after) ;
+          if(au < before) {
+            a.shr();
+          }
+        }
+        if(i == 6) {
+          dec::decimal<PREC-6> aux = dec::decimal_cast<PREC-6>(a.mantissa);
+          a.mantissa = dec::decimal_cast<PREC>(aux);
+          a.mantissa.unpack(before, after) ;
+          if(au < before) {
+            a.shr();
+          }
+        }
+        if(i == 7) {
+          dec::decimal<PREC-7> aux = dec::decimal_cast<PREC-7>(a.mantissa);
+          a.mantissa = dec::decimal_cast<PREC>(aux);
+          a.mantissa.unpack(before, after) ;
+          if(au < before) {
+            a.shr();
+          }
+        }
+        if(i == 8) {
+          dec::decimal<PREC-8> aux = dec::decimal_cast<PREC-8>(a.mantissa);
+          a.mantissa = dec::decimal_cast<PREC>(aux);
+          a.mantissa.unpack(before, after) ;
+          //if(au < before) {
+          //  a.shr(); }
+        }
+    std::cout<< i << '\n';
+    }
+    std::cout<< a.mantissa << '\n';
+    return fijo(a);
+  }
+  ans << num;
+
+  return  ans.str();
+}
+
 inline std::ostream& operator<<(std::ostream& out, const Number &n) {
   switch(Number::formato) {
-    case Formato::NC: return notacion(out, n);
+    case Formato::NC: out << notacion(n);
+    break;
     //case Formato::FIJO: return estandar(out, n);
-    case Formato::ESTANDAR: return estandar(out, n);
-
-    default: return estandar(out, n);
+    case Formato::ESTANDAR: out << estandar(n);
+    break;
+    case Formato::REAL: out << real(n);
+    break;
+    case Formato::FIJO: out << fijo(n);
+    break;
+    default: out << estandar(n);
   }
+  return out;
 }
 
 #endif

@@ -29,7 +29,15 @@ SOURCES += main.cpp\
     left-paren.cpp \
     helpdialog.cpp \
     negative_power.cpp \
-    root.cpp
+    root.cpp \
+    or.cpp \
+    and.cpp \
+    not_equal.cpp \
+    greater_than_or_equal.cpp \
+    less_than_or_equal.cpp \
+    equality.cpp \
+    less_than.cpp \
+    greater_than.cpp
 
 HEADERS  += mainwindow.h \
     division.hpp \
@@ -46,7 +54,15 @@ HEADERS  += mainwindow.h \
     decimal.h \
     helpdialog.h \
     negative_power.hpp \
-    root.hpp
+    root.hpp \
+    or.hpp \
+    and.hpp \
+    not_equal.hpp \
+    greater_than_or_equal.hpp \
+    equality.hpp \
+    greater_than.hpp \
+    less_than.hpp \
+    less_than_or_equal.hpp
 
 FORMS    += mainwindow.ui \
     helpdialog.ui

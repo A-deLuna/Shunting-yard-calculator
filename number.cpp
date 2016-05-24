@@ -3,6 +3,9 @@
 #define ROOT_PREC "0.000000001"
 
 Formato Number::formato = Formato::ESTANDAR;
+long Number::fijo_size = 1;
+
+
 Number::Number(dec::decimal<PREC> mantissa, dec::decimal<PREC> exponent) 
   : mantissa(mantissa), exponent(exponent) {
   normalize();

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <stack>
+#include <cstdlib>
 #include "operator_interface.hpp"
 #include "sum.hpp"
 #include "substraction.hpp"
@@ -52,8 +53,18 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
       throw std::string("invalid format syntax");
     }
     if(tokens[1] == "FIJO" || tokens[1] == "fijo") {
-      Number::formato = Formato::FIJO;
       if(tokens.size() <= 2) throw std::string("invalid format syntax");
+      char * correct;
+      long fixed = std::strtol(tokens[2].c_str(), &correct, 10); 
+      if(!correct) {
+        throw std::string("fijo size is not a number");
+      }
+      else {
+        Number::formato = Formato::FIJO;
+        //todo set fijo size
+        Number::fijo_size = fixed;
+      }
+
     }
     else if(tokens[1] == "REAL" || tokens[1] == "real") {
       Number::formato = Formato::REAL;
