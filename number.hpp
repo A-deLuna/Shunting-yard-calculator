@@ -43,8 +43,8 @@ public:
   static Number factorial (int n);
   static Formato formato;
   static long fijo_size;
-private:
   void toZeroExp();
+private:
   bool isFractional(dec::int64 & numerator, dec::int64 &  denominator) const;
 };
 static std::map<std::pair<Number, Number> , Number > powers;
@@ -222,7 +222,13 @@ inline std::string real(const Number& n) {
   std::stringstream ans;
   std::string num = estandar(n);
   if(num.find(".") == std::string::npos) {
-    num +=".0";
+    if(n.exponent < dec::decimal_cast<PREC>(8) && 
+       n.exponent > dec::decimal_cast<PREC>(-9)) {
+        num +=".0";
+    }
+    else {
+      num.insert(num.find("E"), ".0");
+    }
   }
 
   ans << num;
@@ -233,86 +239,65 @@ inline std::string fijo(const Number& n) {
   std::string num = real(n);
   Number a(n);
   int pos = num.find(".");
-  int decimals = num.size() - pos - 1;
+  int decimals;
+  if(a.exponent < dec::decimal_cast<PREC>(8) && 
+     a.exponent > dec::decimal_cast<PREC>(-9)) {
+     decimals = num.size() - pos - 1;
+  }
+  else {
+    decimals = num.find("E") - pos -1;
+  }
+
 
   if(decimals < Number::fijo_size) {
     for(int i = 0; i < Number::fijo_size - decimals; ++i)  {
-      num += "0";
+      if(a.exponent < dec::decimal_cast<PREC>(8) && 
+         a.exponent > dec::decimal_cast<PREC>(-9)) {
+          num += "0";
+      }
+      else {
+          num.insert(num.find("E"), "0");
+      }
     }
   }
   if (decimals > Number::fijo_size) {
     std::stringstream s;
-    dec::int64 before, after, au;
-    a.mantissa.unpack(before, after) ;
-    if(before != 0) {
-      au = before;
-      int i = numbersize(before) +  (8-Number::fijo_size) -1;
-        if(i == 1) {
+    std::cout<<a.mantissa << "E" << a.exponent << '\n';  
+    if(a.exponent < dec::decimal_cast<PREC>(8) && 
+       a.exponent > dec::decimal_cast<PREC>(-9)) {
+      a.toZeroExp();
+    }
+      int i = Number::fijo_size;
+        if(i == 7) {
           dec::decimal<PREC-1> aux = dec::decimal_cast<PREC-1>(a.mantissa);
           a.mantissa = dec::decimal_cast<PREC>(aux);
-          a.mantissa.unpack(before, after) ;
-          if(au < before) {
-            a.shr();
-          }
         }
-        if(i == 2) {
+        if(i == 6) {
           dec::decimal<PREC-2> aux = dec::decimal_cast<PREC-2>(a.mantissa);
           a.mantissa = dec::decimal_cast<PREC>(aux);
-          a.mantissa.unpack(before, after) ;
-          if(au < before) {
-            a.shr();
-          }
         }
-        if(i == 3) {
+        if(i == 5) {
           dec::decimal<PREC-3> aux = dec::decimal_cast<PREC-3>(a.mantissa);
           a.mantissa = dec::decimal_cast<PREC>(aux);
-          a.mantissa.unpack(before, after) ;
-          if(au < before) {
-            a.shr();
-          }
         }
         if(i == 4) {
           dec::decimal<PREC-4> aux = dec::decimal_cast<PREC-4>(a.mantissa);
           a.mantissa = dec::decimal_cast<PREC>(aux);
-          a.mantissa.unpack(before, after) ;
-          if(au < before) {
-            a.shr();
-          }
         }
-        if(i == 5) {
+        if(i == 3) {
           dec::decimal<PREC-5> aux = dec::decimal_cast<PREC-5>(a.mantissa);
           a.mantissa = dec::decimal_cast<PREC>(aux);
-          a.mantissa.unpack(before, after) ;
-          if(au < before) {
-            a.shr();
-          }
         }
-        if(i == 6) {
+        if(i == 2) {
           dec::decimal<PREC-6> aux = dec::decimal_cast<PREC-6>(a.mantissa);
           a.mantissa = dec::decimal_cast<PREC>(aux);
-          a.mantissa.unpack(before, after) ;
-          if(au < before) {
-            a.shr();
-          }
         }
-        if(i == 7) {
+        if(i == 1) {
           dec::decimal<PREC-7> aux = dec::decimal_cast<PREC-7>(a.mantissa);
           a.mantissa = dec::decimal_cast<PREC>(aux);
-          a.mantissa.unpack(before, after) ;
-          if(au < before) {
-            a.shr();
-          }
         }
-        if(i == 8) {
-          dec::decimal<PREC-8> aux = dec::decimal_cast<PREC-8>(a.mantissa);
-          a.mantissa = dec::decimal_cast<PREC>(aux);
-          a.mantissa.unpack(before, after) ;
-          //if(au < before) {
-          //  a.shr(); }
-        }
-    std::cout<< i << '\n';
-    }
-    std::cout<< a.mantissa << '\n';
+        //TODO validar que fijo size no sea menor a 1
+    std::cout<<a.mantissa << "E" << a.exponent << '\n';  
     return fijo(a);
   }
   ans << num;
