@@ -265,9 +265,17 @@ Number Number::preln(Number number) {
 }
 
 Number Number::nthRoot(Number a, Number n) {
-  // cant take sqrt of negative number
-  if(a < Number ("0", "0")) 
-    throw std::string("negative sqrt exception");
+  Number n_cpy(n);
+  n_cpy.toZeroExp();
+  dec::int64 before, after;
+  n_cpy.mantissa.unpack(before, after);
+  n = Number::abs(n);
+  if(n == Number("0","0")) {
+    throw std::string("can't take zero root");
+  }
+  if(before % 2 == 0 && a < Number ("0", "0"))
+    throw std::string("negative root of even base exception");
+
 
   Number d = Number(a.exponent,dec::decimal_cast<PREC>(0));
   Number current =  Number("1","0");

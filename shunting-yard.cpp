@@ -5,6 +5,7 @@
 #include <map>
 #include <stack>
 #include <cstdlib>
+#include <algorithm>
 #include "operator_interface.hpp"
 #include "sum.hpp"
 #include "substraction.hpp"
@@ -28,6 +29,7 @@
 
 // global state
 std::stack<Number> output_stack;
+std::stack<Number> copy_stack;
 // TODO refactor to use std::shared_ptr
 std::stack<Operator *> operator_stack;
 
@@ -48,6 +50,10 @@ Number parse(const std::string & infix_op, std::vector<std::string> & out_ops) {
   // start previous_op with a dummy value
   // when previous_op is null it means that the last token was not an operation
   std::vector<std::string> tokens = regex(infix_op);
+  std::transform (tokens.begin(), tokens.end(), tokens.begin(), 
+      [](std::string s) { std::transform( s.begin(), s.end(), s.begin(),
+        [](unsigned char c) {return std::toupper(c); }); return s;});
+
   if(!tokens.empty() && (tokens[0] == "FORMATO" || tokens[0] == "formato")) {
     if(tokens.size() <= 1) {
       throw std::string("invalid format syntax");
@@ -185,6 +191,10 @@ Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string>
         if(operator_stack.empty()) {
           throw std::string("mismatched parens");
         }
+        // dirty fix, the problem is that in get_operator we only return a
+        // negative if there was an operator before, so root(3, -27) was being
+        // treated as a substraction
+        previous_op = new Sum();
     }
 
     else if((op = get_operator(token, previous_op, boolean_exp)) != nullptr) {
@@ -438,9 +448,6 @@ void evaluate(Operator* op, std::vector<std::string> & out_ops) {
   }
 
   if(ans > Number("9.9999999E99", "0") || ans < Number("-9.9999999E99", "0")) {
-    //std::cout<<(ans > Number("9.9999999E99", "0"))<<'\n';
-    //std::cout<<(ans < Number("-9.9999999E99", "0"))<<'\n';
-    //std::cout<<ans<<'\n'; 
     throw std::string("Number out of valid range2 " );
   }
   output_stack.push(ans);
