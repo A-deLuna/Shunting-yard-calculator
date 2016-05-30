@@ -40,7 +40,8 @@ Cosas a tomar en cuenta:
 la sintaxis del if es:
 si [ condicion ] entonces () sino ()
 en condicion puede haber:  = &lt;&gt; &gt; &lt; &gt;= &lt;= and or 
-
+la condicion tambien acepta numeros, 0 es falso y cualquier otro es verdadero. 
+si solo hay  si[condicion] entonces y no se cumple la condicion nomas se imprime 0
 para la raiz la sintaxis es root (base, numero)
 
 los formatos son:
@@ -48,9 +49,7 @@ formato (real, fijo n, estandar, nc)
 
 * Si metes un numero como 1.232435454545454
 o solo los primeros 8 digitos son tomados en cuenta, para numeros grandes, solo se aceptan de 11 digitos seguidos seguidos o no de un punto o E
-
 * Los decimales siempre se redondean a la hora de mostrarse, si la representacion interna es de 2.00000005 se va a imprimir 2.00000001
-
 *también para números como 1.2345E-6, al momento de mostrarlos a proposito se truncan  los digitos mas pequeños, enseñando 0.00000124.</string>
    </property>
   </widget>
