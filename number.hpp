@@ -219,84 +219,70 @@ inline std::string notacion(const Number &n) {
 
 }
 inline std::string real(const Number& n) {
+  if(n.exponent >= dec::decimal_cast<PREC>(8) && 
+     n.exponent <= dec::decimal_cast<PREC>(-9)) {
+    return estandar(n);
+  }
+
   std::stringstream ans;
   std::string num = estandar(n);
   if(num.find(".") == std::string::npos) {
-    if(n.exponent < dec::decimal_cast<PREC>(8) && 
-       n.exponent > dec::decimal_cast<PREC>(-9)) {
-        num +=".0";
-    }
-    else {
-      num.insert(num.find("E"), ".0");
-    }
+      num +=".0";
+    
   }
-
   ans << num;
   return ans.str();
 }
 inline std::string fijo(const Number& n) {
+  if(n.exponent >= dec::decimal_cast<PREC>(8) || 
+     n.exponent <= dec::decimal_cast<PREC>(-9)) {
+    return estandar(n);
+  }
   std::stringstream ans;
   std::string num = real(n);
   Number a(n);
   int pos = num.find(".");
-  int decimals;
-  if(a.exponent < dec::decimal_cast<PREC>(8) && 
-     a.exponent > dec::decimal_cast<PREC>(-9)) {
-     decimals = num.size() - pos - 1;
-  }
-  else {
-    decimals = num.find("E") - pos -1;
-  }
-
+  int decimals = num.size() - pos - 1;
 
   if(decimals < Number::fijo_size) {
     for(int i = 0; i < Number::fijo_size - decimals; ++i)  {
-      if(a.exponent < dec::decimal_cast<PREC>(8) && 
-         a.exponent > dec::decimal_cast<PREC>(-9)) {
           num += "0";
-      }
-      else {
-          num.insert(num.find("E"), "0");
-      }
     }
   }
   if (decimals > Number::fijo_size) {
     std::stringstream s;
     std::cout<<a.mantissa << "E" << a.exponent << '\n';  
-    if(a.exponent < dec::decimal_cast<PREC>(8) && 
-       a.exponent > dec::decimal_cast<PREC>(-9)) {
-      a.toZeroExp();
-    }
-      int i = Number::fijo_size;
-        if(i == 7) {
-          dec::decimal<PREC-1> aux = dec::decimal_cast<PREC-1>(a.mantissa);
-          a.mantissa = dec::decimal_cast<PREC>(aux);
-        }
-        if(i == 6) {
-          dec::decimal<PREC-2> aux = dec::decimal_cast<PREC-2>(a.mantissa);
-          a.mantissa = dec::decimal_cast<PREC>(aux);
-        }
-        if(i == 5) {
-          dec::decimal<PREC-3> aux = dec::decimal_cast<PREC-3>(a.mantissa);
-          a.mantissa = dec::decimal_cast<PREC>(aux);
-        }
-        if(i == 4) {
-          dec::decimal<PREC-4> aux = dec::decimal_cast<PREC-4>(a.mantissa);
-          a.mantissa = dec::decimal_cast<PREC>(aux);
-        }
-        if(i == 3) {
-          dec::decimal<PREC-5> aux = dec::decimal_cast<PREC-5>(a.mantissa);
-          a.mantissa = dec::decimal_cast<PREC>(aux);
-        }
-        if(i == 2) {
-          dec::decimal<PREC-6> aux = dec::decimal_cast<PREC-6>(a.mantissa);
-          a.mantissa = dec::decimal_cast<PREC>(aux);
-        }
-        if(i == 1) {
-          dec::decimal<PREC-7> aux = dec::decimal_cast<PREC-7>(a.mantissa);
-          a.mantissa = dec::decimal_cast<PREC>(aux);
-        }
-        //TODO validar que fijo size no sea menor a 1
+    a.toZeroExp();
+    int i = Number::fijo_size;
+      if(i == 7) {
+        dec::decimal<PREC-1> aux = dec::decimal_cast<PREC-1>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+      }
+      if(i == 6) {
+        dec::decimal<PREC-2> aux = dec::decimal_cast<PREC-2>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+      }
+      if(i == 5) {
+        dec::decimal<PREC-3> aux = dec::decimal_cast<PREC-3>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+      }
+      if(i == 4) {
+        dec::decimal<PREC-4> aux = dec::decimal_cast<PREC-4>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+      }
+      if(i == 3) {
+        dec::decimal<PREC-5> aux = dec::decimal_cast<PREC-5>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+      }
+      if(i == 2) {
+        dec::decimal<PREC-6> aux = dec::decimal_cast<PREC-6>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+      }
+      if(i == 1) {
+        dec::decimal<PREC-7> aux = dec::decimal_cast<PREC-7>(a.mantissa);
+        a.mantissa = dec::decimal_cast<PREC>(aux);
+      }
+      //TODO validar que fijo size no sea menor a 1
     std::cout<<a.mantissa << "E" << a.exponent << '\n';  
     return fijo(a);
   }
