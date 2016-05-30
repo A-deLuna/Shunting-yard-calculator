@@ -274,7 +274,12 @@ Number shunting_yard(std::vector<std::string> & tokens, std::vector<std::string>
     }
 
   }
-  return output_stack.empty() ? Number("0", "0") : output_stack.top();
+  if(output_stack.empty()) return Number ("0","0");
+
+  Number ans = output_stack.top();
+  output_stack.pop();
+  if(!output_stack.empty()) throw std::string("too many arguments to function");
+  return ans;
 
 }
 

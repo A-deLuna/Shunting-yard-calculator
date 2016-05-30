@@ -27,7 +27,7 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>16</pointsize>
+     <pointsize>14</pointsize>
      <weight>50</weight>
      <bold>false</bold>
      <stylestrategy>PreferDefault</stylestrategy>
@@ -37,14 +37,21 @@
    <property name="plainText">
     <string>Bienvenido!
 Cosas a tomar en cuenta: 
-* La calculadora no truena con numeros con E &lt; -99 o E &gt; 99 (pero tampoco te pases de lanza)
+la sintaxis del if es:
+si [ condicion ] entonces () sino ()
+en condicion puede haber:  = &lt;&gt; &gt; &lt; &gt;= &lt;= and or 
+
+para la raiz la sintaxis es root (base, numero)
+
+los formatos son:
+formato (real, fijo n, estandar, nc)
 
 * Si metes un numero como 1.232435454545454
 o solo los primeros 8 digitos son tomados en cuenta, para numeros grandes, solo se aceptan de 11 digitos seguidos seguidos o no de un punto o E
 
-*Por favor evita meter exponentes con muchs digitos, se pone lento, de preferencia mete  solo dos digitos, por ejemplo 2^0.3 es rapido, 2^0.33 esta normal pero 2^0.333 y demas ya esta muy lento y podria tardar dias... asi que porfa evitalo
+* Los decimales siempre se redondean a la hora de mostrarse, si la representacion interna es de 2.00000005 se va a imprimir 2.00000001
 
-*también para números como 1.2345E-6, al momento de mostrarlos a proposito se truncan  los digitos mas pequeños, enseñando 0.00000124. Preferí hacer esto porque así lo enseñaría mi casio :p</string>
+*también para números como 1.2345E-6, al momento de mostrarlos a proposito se truncan  los digitos mas pequeños, enseñando 0.00000124.</string>
    </property>
   </widget>
  </widget>
